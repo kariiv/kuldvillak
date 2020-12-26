@@ -380,10 +380,6 @@
       margin: auto;
     }
 
-    .hide {
-      display: none;
-    }
-
     h3 {
       font-size: 20px;
     }
@@ -467,6 +463,10 @@
       color: #fff;
     }
 
+    .pointer {
+      user-select: none;
+    }
+
     .pointer span {
       display: inline-block;
       width: 45%;
@@ -478,11 +478,9 @@
       font-family: monospace;
       font-weight: bold;
     }
-
     .pointer .plus {
       color: #2da94e;
     }
-
     .pointer .minus {
       color: #ff0000;
     }
@@ -538,9 +536,9 @@
       border: none;
     }
 
-    .grid {
-      opacity: 0;
-    }
+    /*.grid {*/
+    /*  opacity: 0;*/
+    /*}*/
 
     #question-modal {
       transform-origin: top left;
@@ -639,9 +637,6 @@
       opacity: 1;
     }
 
-    .mathy {
-      background-color: transparent;
-    }
 
     kbd {
       -moz-border-radius: 3px;
@@ -663,20 +658,6 @@
 
     #options {
       display: block;
-    }
-
-    .grid {
-      opacity: 0;
-    }
-
-    #first-load {
-      max-width: 500px;
-      margin: auto;
-      background-color: #ffff5f;
-      border-radius: 3px;
-      color: #000;
-      padding: 20px;
-      margin-bottom: 20px;
     }
 
     #first-load a {
@@ -754,21 +735,13 @@
       flex-direction: column;
     }
 
-
-    .click-to-zoom span {
-      background-color: #ccc;
-      font-size: 14px;
-      display: inline-block;
-      padding: 3px;
-    }
-
     .grid-row {
       display: flex;
       flex: 1;
     }
 
     .grid-cell {
-      border: 3px solid black;
+      border: 2px solid black;
       overflow: hidden;
       position: relative;
       background-color: #2a3698;
@@ -797,28 +770,20 @@
     }
 
     .grid-last-row {
-      border-bottom: 3px solid black;
+      border-bottom: 2px solid black;
     }
 
     .grid-first-row {
-      border-top: 3px solid black;
+      border-top: 2px solid black;
     }
 
     .grid-row-questions {
-      border-left: 3px solid black;
-      border-right: 3px solid black;
+      border-left: 2px solid black;
+      border-right: 2px solid black;
     }
 
     .grid-row-cats .grid-cell {
       border-color: transparent;
-    }
-
-    .grid-row-cats .cell {
-      /*align-items:flex-end;*/
-    }
-
-    .grid-row-cats-resize-done {
-      flex: none;
     }
 
     .cell-group {
@@ -963,71 +928,23 @@
 
     if (!Math.log2) Math.log2 = (x) => Math.log(x) * Math.LOG2E
 
-    function capSizes(el, max_width, max_height) {
-      const treeWalker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT, null, false);
-      let did_work = false;
-      while (treeWalker.nextNode()) {
-        node = treeWalker.currentNode;
-        if (node.tagName === "IMG" || node.tagName === "VIDEO" || node.tagName === "IFRAME") {
-          try {
-            const real_width = parseInt(node.width) || max_width;
-            const real_height = parseInt(node.height) || max_height;
-            const a = Math.min(1.0 * max_width / real_width, 1.0 * max_height / h)
-            node.style.maxWidth = real_width * a + "px";
-            node.style.maxHeight = max_height * a + "px";
-            did_work = true;
-          } catch (e) {}
-
-        }
-      }
-
-      return did_work;
-    }
-
     const shrink_cell_cache = {};
-    let enable_caching = false;
+    let enable_caching = true;
 
-    function shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms, capsizes) {
+    function shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms) {
+      let cached;
+      let cache_key;
       if (enable_caching) {
-        const cache_key = [max_width, max_height, $cell.innerHTML].join(".");
-        const cached = shrink_cell_cache[cache_key];
+        cache_key = [max_width, max_height, $cell.innerHTML].join(".");
+        cached = shrink_cell_cache[cache_key];
       } else
-        return _shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms, capsizes);
+        return _shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms);
 
       if (cached) {
         $scaler.style.fontSize = cached.font_size + "px";
         $scaler.style.transform = (transforms || "") + " scale(" + cached.scale + ") ";
-        capSizes($cell, max_width, max_height);
       } else
-        shrink_cell_cache[cache_key] = _shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms, capsizes);
-    }
-
-    test_divs = [];
-
-    function initDivs(max_font_size) {
-      if (test_divs.length - 1 === max_font_size) return;
-
-      for (let i = 0; i <= max_font_size; i++) {
-        var dummy_element = test_divs[i];
-        if (!dummy_element) {
-          var dummy_element = document.createElement("div");
-          //dummy_element.style.opacity = 0;
-          dummy_element.style.display = "block";
-          //dummy_element.style.overflowX = "auto";
-          dummy_element.style.position = "absolute";
-          //dummy_element.style.visibility = "hidden";
-          dummy_element.style.left = "-100000px";
-          dummy_element.style.top = -(i * 120) + "px";
-          dummy_element.style.fontFamily = "Verdana, Arial, Helvetica, sans-serif";
-          dummy_element.style.color = "#000";
-          dummy_element.style.border = "3px solid black";
-          dummy_element.style.fontSize = i + "px";
-          //dummy_element.setAttribute("id", "test-height")
-          test_divs[i] = dummy_element;
-          var body = document.querySelectorAll('body')[0];
-          body.appendChild(dummy_element);
-        }
-      }
+        shrink_cell_cache[cache_key] = _shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms);
     }
 
     function shrink_in_place($cell, max_font_size, min_font_size) {
@@ -1056,52 +973,11 @@
       return hi;
     }
 
-    function escapeHtml(unsafe) {
-      return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
+    function _shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms, min_font_size) {
+      if (min_font_size === undefined)
+        min_font_size = 1;
 
-    function getText(el) {
-      const treeWalker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, null, false);
-      const text = []
-      while (treeWalker.nextNode()) {
-        const node = treeWalker.currentNode;
-        if (node.nodeType === 3) text.push(escapeHtml(node.textContent));
-        else if (node.tagName === "BR") text.push("<BR>");
-        else if (node.tagName === "P") {
-          if (text.length !== 0) text.push("<BR>");
-        }
-      }
-      return text.join("");
-    }
-
-    function _shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms, capsizes, min_font_size) {
-      if (capsizes === undefined) capsizes = true;
-
-      if (min_font_size === undefined) min_font_size = 1;
-
-      const text = getText($scaler || $cell)
-
-      initDivs(max_font_size);
-      for (let i = 0; i <= max_font_size; i++) {
-        dummy_element = test_divs[i];
-        dummy_element.innerHTML = text
-        dummy_element.style.width = max_width + "px";
-        dummy_element.style.height = max_height + "px";
-      }
-
-      let font_size = binarySearch(test_divs, function(div) {
-        const isHorizontalScrollbar = div.scrollWidth > div.clientWidth;
-        const isVerticalScrollbar = div.scrollHeight > div.clientHeight;
-        return isHorizontalScrollbar || isVerticalScrollbar
-      });
-      font_size = font_size - 1
-
-      font_size = Math.max(min_font_size, Math.min(font_size, max_font_size));
+      let font_size = Math.max(min_font_size, max_font_size);
 
       if (!$scaler) return { font_size: font_size }
 
@@ -1137,40 +1013,6 @@
       }
     }
 
-    let render_queue = [];
-    let render_queue_index = 0;
-    let render_interval = null;
-    let max_renderers = 1
-    let work_scheduled = false;
-
-    function resetRenderQueue() {
-      render_queue = [];
-      render_queue_index = 0;
-    }
-
-    function renderQueue() {
-      let steps = 1;
-      let i = 0;
-      let start = +new Date();
-      while (((+new Date()) - start) < 10 && render_queue_index < render_queue.length && render_queue.length) {
-        i++
-        var item = render_queue[render_queue_index];
-        item[0].apply(item[1], item.slice(2));
-        render_queue_index++;
-      }
-
-      if (render_queue_index >= render_queue.length) work_scheduled = false;
-      else work_scheduled = setTimeout(renderQueue)
-    }
-
-    function enqueueRender() {
-      let item = Array.prototype.slice.call(arguments)
-      item[0].apply(item[1], item.slice(2));
-      return
-      render_queue.push(Array.prototype.slice.call(arguments))
-      if (!work_scheduled) work_scheduled = setTimeout(renderQueue)
-    }
-
     function matches(el, selector) {
       return (el.matches || el.matchesSelector || el.msMatchesSelector || el.mozMatchesSelector || el.webkitMatchesSelector || el.oMatchesSelector).call(el, selector);
     }
@@ -1181,7 +1023,7 @@
         const eventName = names[i];
         document.addEventListener(eventName, function(e) {
           // loop parent nodes from the target to the delegation node
-          for (var target = e.target; target && target !== this; target = target.parentNode) {
+          for (let target = e.target; target && target !== this; target = target.parentNode) {
             if (matches(target, elementSelector)) {
               handler.call(target, e);
               break;
@@ -1194,31 +1036,8 @@
     function closest(element, selector) {
       do {
         if (matches(element, selector)) return element;
-      } while (element === element.parentElement);
+      } while (element = element.parentElement);
       return null;
-    }
-
-    function retypeset(scope, then) {
-      if (!window.MathJax) return false;
-
-      scope = scope || document
-      const math = scope.querySelectorAll('.mathy');
-      const nodes = [];
-      for (let i = 0; i < math.length; i++) {
-        const node = math[i]
-        node.innerText = node.getAttribute("data-original") || ('`' + node.innerText + '`');
-        node.setAttribute("data-original", node.innerText)
-        //MathJax.Hub.Queue(["Typeset",MathJax.Hub,node]);
-        nodes.push(node)
-      }
-
-      MathJax.Hub.Queue(["Typeset", MathJax.Hub, nodes]);
-
-      if (math.length > 0) {
-        MathJax.Hub.Queue([then, window]);
-        return true;
-      }
-      return false;
     }
 
     function prepwork(cell, scale_factor) {
@@ -1227,49 +1046,34 @@
       const width = cell.parentElement.clientWidth;
       const height = cell.parentElement.clientHeight;
       const inner = cell.querySelectorAll(".cell-inner")[0];
-      const capsizes = mode !== "play"
 
-      shrink_cell(cell, inner, width * scale_factor, height * scale_factor, 32, "", capsizes);
+      shrink_cell(cell, inner, width * scale_factor, height * scale_factor, 32, "");
       return inner
     }
 
-    function minirender(grid, on_done, question_scale_factor) {
-      if (question_scale_factor === undefined) question_scale_factor = 1;
+    function minirender(grid, question_scale_factor) {
+      if (question_scale_factor === undefined)
+        question_scale_factor = 1;
 
-      window.nextthing = function() {
-        setTimeout(function() {
-          grid.classList.add("resizing");
-          let t = grid.offsetTop
-          miniresize(grid, grid.querySelectorAll(".grid-row-cats .cell"), true, 1);
-          miniresize(grid, grid.querySelectorAll(".grid-row-questions .cell"), false, question_scale_factor);
-          grid.classList.remove("resizing");
-          if (on_done) on_done(grid);
-        });
-      }
-
-      if (!retypeset(grid, "nextthing")) window.nextthing();
+      miniresize(grid, grid.querySelectorAll(".grid-row-cats .cell"), true, 1);
+      miniresize(grid, grid.querySelectorAll(".grid-row-questions .cell"), false, question_scale_factor);
     }
 
     function miniresize(grid, cells, is_cats, scale_factor) {
       if (is_cats) {
         const cat = grid.querySelectorAll(".grid-row-cats")[0]
-        cat.classList.remove("grid-row-cats-resize-done")
         cat.style.height = "auto";
         let max_height = 0;
-        for (let i = 0; i < cells.length; i++) {
-          const cell = cells[i];
+        for (const cell of cells) {
           const inner = prepwork(cell);
           cell.client_height = inner.clientHeight;
           max_height = Math.max(max_height, inner.clientHeight);
         }
-
-        cat.classList.add("grid-row-cats-resize-done");
         cat.style.height = max_height + "px";
       } else
-        for (let i = 0; i < cells.length; i++) {
-          const cell = cells[i];
-          enqueueRender(prepwork, null, cell, scale_factor);
-        }
+        for (const cell of cells)
+          prepwork(cell, scale_factor)
+
     }
 
     let modal = function() {}
@@ -1325,20 +1129,19 @@
       else h = bbox_teams.top + ((window.innerHeight - bbox_teams.height) / (rows)) / 4
 
       grid.style.height = h + "px";
-      minirender(grid, function(g) {
-        g.style.opacity = 1;
-      }, .6);
+      minirender(grid, .8);
     }
 
     ready(function() {
       grid = document.querySelectorAll(".grid")[0];
-      window.addEventListener("resize", debounce(resize, 100, false));
+      // window.addEventListener("resize", debounce(resize, 10, false));
+      window.addEventListener("resize", resize);
       resize();
       renderState(initial_state);
 
       window.addEventListener("keydown", function(e) {
-        var ESC = 27
-        var SPACE = 32
+        const ESC = 27
+        const SPACE = 32
         if (modal.is_open) {
           if (e.keyCode === ESC) {
             e.preventDefault();
@@ -1350,7 +1153,7 @@
         }
       }, false);
 
-      var debouncedSaveState = debounce(function() {
+      const debouncedSaveState = debounce(function() {
         try {
           localStorage.setItem("game-2161995", JSON.stringify(getCurrentState()))
         } catch (e) {
@@ -1380,23 +1183,18 @@
         modal.show(this);
       });
 
-      // prevent the buttons from being highlighted
-      on("mousedown", ".minus, .plus", function(e) {
-        e.preventDefault();
-      });
-
       // handle points clicks
       on("click", ".minus, .plus", function(e) {
-        var $team = closest(this, ".team");
-        var $points = $team.querySelectorAll(".points")[0];
-        var points = parseInt($points.innerText);
+        const $team = closest(this, ".team");
+        const $points = $team.querySelectorAll(".points")[0];
+        const points = parseInt($points.innerText);
         if (isNaN(points)) {
           alert("Error! The score for this team is not a number. You need to edit the score and change it to a number.");
           return
         }
-        var active_question = document.querySelectorAll(".active-question .cell-inner")[0];
-        var fallback = document.querySelectorAll(".grid-row-questions .cell-inner")[0];
-        var val = parseInt(active_question ? active_question.innerText : fallback.innerText);
+        const active_question = document.querySelectorAll(".active-question .cell-inner")[0];
+        const fallback = document.querySelectorAll(".grid-row-questions .cell-inner")[0];
+        let val = parseInt(active_question ? active_question.innerText : fallback.innerText);
         if (this.classList.contains("minus")) {
           val = -val;
         }
@@ -1449,26 +1247,24 @@
 
       teams = document.querySelectorAll("#teams .team");
       if (game.first_render) {
-        var old_state = getOldState();
+        const old_state = getOldState();
         if (old_state) {
-          for (var i = 0; i < val; i++) {
-            var t = teams[i];
+          for (let i = 0; i < val; i++) {
+            const t = teams[i];
             if (old_state.teams[i]) {
-              var name = old_state.teams[i].name;
-              var points = old_state.teams[i].points;
+              const name = old_state.teams[i].name;
+              const points = old_state.teams[i].points;
               t.querySelectorAll(".name")[0].textContent = name
               t.querySelectorAll(".points")[0].textContent = points
             }
           }
 
           // restore the inert questions
-          var inerts = old_state.inerts;
-          for (var id in inerts) {
+          const inerts = old_state.inerts;
+          for (const id in inerts) {
             try {
               document.getElementById(id).classList.add("inert");
-            } catch (e) {
-              continue;
-            }
+            } catch (e) {}
           }
         }
       } else if (clear) {
@@ -1493,7 +1289,7 @@
 
     function hideModal() {
       modal.is_open = false;
-      var div = document.getElementById("question-modal");
+      const div = document.getElementById("question-modal");
       div.style.display = "none";
       div.classList.remove("expanded");
       div.style.borderWidth = "3px";
@@ -1988,6 +1784,7 @@
       <a class="menu-picker" href="javascript:backToMenu('menu')">
         MENU
       </a>
+
       <div style="display:flex; margin-left:auto; margin-right:auto; overflow:auto;">
         <div class="team" style="display:none">
           <h3 class="name" contenteditable="true">Team 1</h3>
