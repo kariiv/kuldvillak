@@ -886,16 +886,27 @@ console.log(text)
 console.log(text.length)
 console.log(en.length)
 
-const teams = document.getElementById()
-const teams = document.getElementById()
+const teams = document.getElementById("teams")
+const teams = document.getElementById("question-modal")
 
-class question {
+class Question {
   constructor(question, answer, points) {
-
+    this.question = question
+    this.answer = answer
+    this.points = points
+  }
+  getQuestion() {
+    return this.question;
+  }
+  getAnswer() {
+    return this.answer;
+  }
+  getPoints() {
+    return this.points;
   }
 }
 
-class category {
+class Category {
 
   constructor(name) {
     this.name = name;
@@ -911,11 +922,11 @@ class category {
     // this.questions.indexOf(question)
   }
   getQuestions() {
-
+    return this.questions;
   }
 
   createQuestion(question, answer, points) {
-
+    this.questions.push(new Question(question, answer, points))
     return this;
   }
 }
@@ -924,8 +935,9 @@ class Team {
 
   constructor(name, points=0) {
     this.name = name
-    this.points = points
     this._active = true
+    
+    this.pointsManual = []
     this.answered = []
   }
 
@@ -955,17 +967,22 @@ class Kuldvillak {
   constructor(props) {
     this.teams = []
     this.categories = []
-    this.questions = []
   }
 
-  addTeam() {
-
+  addTeam(team) {
+    this.teams.push(team)
   }
-
-  removeTeam() {
-
+  removeTeam(team) {
+    
   }
-
+  
+  addCategory(category) {
+    this.categories.push(category)
+  }
+  removeCategory(category) {
+    
+  }
+  
 }
 
 
@@ -1811,7 +1828,8 @@ function debounce(func, wait, immediate) {
         </div>
       </div>
       <div class="modal-body">
-        <div class="modal-inner"></div>
+        <div class="modal-inner">
+        </div>
       </div>
     </div>
   </div>
