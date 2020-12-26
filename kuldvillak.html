@@ -73,8 +73,6 @@
 
     abbr[title],
     abbr[data-original-title] {
-      text-decoration: underline;
-      -webkit-text-decoration: underline dotted;
       text-decoration: underline dotted;
       cursor: help;
       border-bottom: 0;
@@ -146,7 +144,6 @@
       color: #007bff;
       text-decoration: none;
       background-color: transparent;
-      -webkit-text-decoration-skip: objects;
     }
 
     a:hover {
@@ -332,30 +329,12 @@
       -webkit-appearance: none;
     }
 
-    ::-webkit-file-upload-button {
-      font: inherit;
-      -webkit-appearance: button;
-    }
-
-    output {
-      display: inline-block;
-    }
-
-    summary {
-      display: list-item;
-    }
-
-    template {
-      display: none;
-    }
-
     [hidden] {
       display: none !important;
     }
 
     /*# sourceMappingURL=bootstrap-reboot.css.map */
-  </style>
-  <style type="text/css">
+
     html,
     body {
       overflow: hidden;
@@ -384,14 +363,6 @@
       font-size: 20px;
     }
 
-    h3,
-    .point-cell {
-      color: #ffff5f;
-      color: #fff;
-      text-align: center;
-      font-weight: bold;
-    }
-
     .modal-wrapper {
       background-color: rgba(0, 0, 0, .5);
       display: none;
@@ -402,14 +373,13 @@
       bottom: 0;
       z-index: 2;
       height: 100%;
-      /* stupid safari */
+      /* Todo: stupid safari */
     }
 
     .modal {
       position: relative;
       top: 50%;
       transform: translate(0%, -50%);
-      background-color: #ffffff;
       z-index: 2;
       border-radius: 5px;
       background-color: #efefef;
@@ -427,7 +397,13 @@
       left: 0;
       right: 0;
       z-index: 11;
+
       display: flex;
+      justify-content: center;
+
+      /*margin-left:auto;*/
+      /*margin-right:auto;*/
+      /*overflow:auto;*/
     }
 
     #teams .team {
@@ -439,14 +415,6 @@
       background-color: white;
       border-top-left-radius: 2px;
       border-top-right-radius: 2px;
-    }
-
-    #teams .team:first-of-type {
-      margin-left: 50px;
-    }
-
-    #teams .team:last-of-type {
-      margin-right: 50px;
     }
 
     #teams h3.name {
@@ -487,6 +455,7 @@
 
     #gameplay {
       filter: blur(5px);
+      transition: filter 0.15s ease-in-out;
       width: 100%;
       position: absolute;
       top: 0;
@@ -495,13 +464,15 @@
       right: 0;
     }
 
-    #menu-links {
-      font-size: 20px;
+    #fullscreen {
+      display: none;
       margin-top: 20px;
     }
-
-    #fullscreen {
-      margin-top: 20px;
+    #fullscreen, #windows {
+      display: none;
+    }
+    #fullscreen, #mac {
+      display: none;
     }
 
     #options select {
@@ -531,14 +502,9 @@
       color: white;
       margin-left: 10px;
       font-size: 14px !important;
-      /*padding:5px;*/
       height: auto !important;
       border: none;
     }
-
-    /*.grid {*/
-    /*  opacity: 0;*/
-    /*}*/
 
     #question-modal {
       transform-origin: top left;
@@ -571,18 +537,6 @@
       max-width: 100%;
     }
 
-    #question-modal {
-      background-color: #2a3698;
-      border: 3px solid #ffff00;
-      ;
-      z-index: 10;
-    }
-
-    .expanded {
-      transition: .5s all ease;
-      border-width: 0;
-    }
-
     .modal,
     .modal-body {
       background-color: transparent;
@@ -611,14 +565,8 @@
       padding-right: 10%;
     }
 
-    .question,
-    .answer {
+    .question, .answer {
       margin: auto;
-    }
-
-    #question-modal .question {
-      display: none;
-      opacity: 0;
     }
 
     #answer-button,
@@ -626,17 +574,26 @@
       cursor: pointer;
     }
 
+    #question-modal {
+      background-color: #2a3698;
+      border: 3px solid #ffff00;
+      z-index: 10;
+    }
     #question-modal .question {
+      display: none;
+      opacity: 0;
       border-top: 3px dotted white;
       margin-top: 10px;
       padding-top: 10px;
-    }
-
-    #question-modal .reveal {
       transition: max-height 2s ease, opacity 2s ease;
+    }
+    #question-modal .reveal {
       opacity: 1;
     }
-
+    .expanded {
+      transition: .5s all ease;
+      border-width: 0;
+    }
 
     kbd {
       -moz-border-radius: 3px;
@@ -669,7 +626,7 @@
       user-select: none;
     }
 
-    .menu-picker {
+    #menu-picker {
       background-color: #131844;
       align-items: center;
       justify-content: center;
@@ -678,49 +635,27 @@
       text-transform: uppercase;
       align-self: flex-end;
       padding: 10px 10px;
-      border-right: 2px solid #999;
-      border-top: 2px solid #999;
+      border-right: 2px solid #fff;
+      border-top: 2px solid #fff;
       margin-right: 10px;
       position: absolute;
-      color: #999;
+      color: #fff;
       text-decoration: none;
       bottom: 0;
       opacity: 0.1;
       transition: opacity .1s ease-in-out;
       writing-mode: vertical-rl;
       text-orientation: upright;
+      user-select: none;
     }
 
-    .menu-picker:hover {
-      color: white;
-      text-decoration: none;
-      border-color: white;
+    #menu-picker:hover {
+      cursor: pointer;
       opacity: 1;
-    }
-
-    .yoembed {
-      display: inline-block;
-    }
-  </style>
-  <style type="text/css">
-    #test-height {
-      font-family: verdana;
-      /* TODO */
-      padding: 0;
-      margin: 0;
-      color: black;
-    }
-
-    * {
-      box-sizing: border-box;
     }
 
     .cell-inner p:last-child {
       margin-bottom: 0;
-    }
-
-    #grid {
-      transition: opacity 1s;
     }
 
     .grid {
@@ -827,13 +762,6 @@
       overflow: hidden;
     }
 
-    .cell.back,
-    .cell.front,
-    .cell-group,
-    .category {
-      transition: .3s;
-    }
-
     .cell-group:hover {
       border-color: yellow;
     }
@@ -889,641 +817,721 @@
     }
   </style>
   <script type="text/javascript">
-  
-  const gameData = [
-    {
-      cat: "Inimesed",
-      qs: [
-        { p:100,q:"",a:""},
-        ]
-    }
+
+// function b64EncodeUnicode(str) {
+//   return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
+//           (match, p1) => String.fromCharCode('0x' + p1)))
+// }
+// function b64DecodeUnicode(str) {
+//   return decodeURIComponent(atob(str).split('')
+//           .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+// }
+
+const gameData = [
+  {
+    c: "Inimesed",
+    qs: [
+      { p:100,q:"Kes on Eesti peaminister?",a:"Kes on Andrus Ansip"},
+      { p:200,q:"Kes mängis \"üksinda kodus\" Kevinit?",a:"Kes on Macauly Culkin"},
+      { p:300,q:"Üks maailma kulsaim paar, kes mängisid koos filmis?",a:"Kes on Brad Pitt ja Angelina Jolie"},
+      { p:400,q:"kes on Kanadast pärit kuulsaim popstaar?",a:"Kes on Justin Bieber"},
+      { p:500,q:"Mis saatest sai kuulsaks perekond Kardashian?",a:"Mis on \"keeping up with Kardashians\""},
     ]
-  
-    function removeClass(selector, cls) {
-      const doms = document.querySelectorAll(selector);
-      for (let i = 0; i < doms.length; i++)
-        doms[i].classList.remove(cls);
-    }
+  },{
+    c: "Eesti",
+    qs: [
+      { p:100,q:"Kas Eesti on eurovisioonil võitnud?",a:"Mis on Jah"},
+      { p:200,q:"Kes võitis \"Su nägu kõlab tuttavalt\" esimese hooaja?",a:"Kes on Evelin Võigemast"},
+      { p:300,q:"Kes võitis saate \"Su nägu kõlab tuttavalt\" teise hooaja?",a:"Kes on Koit Toome"},
+      { p:400,q:"Mitmes on Eesti maailmas nahavähi arvukuse poolest?",a:"Mis on esimene"},
+      { p:500,q:"Kes kuulutas Tallinna üheks ilusaimaks linnaks jõulude ajal?",a:"Kes on BBC"},
+    ]
+  },{
+    c: "Maailm",
+    qs: [
+      { p:100,q:"Mitu inimest on maakeral kokku?",a:"Mis on 7 miljardit"},
+      { p:200,q:"Briti kuulsaim poistebänd?",a:"Kes on One Directon"},
+      { p:300,q:"Mis riigi kuninganna on Elisabeth II?",a:"Mis on Inglismaa"},
+      { p:400,q:"Lõuna-Prantsusmaal asuv \"kuulsate ja rikaste kuurort\"?",a:"Mis on Saint Tropez"},
+      { p:500,q:"Mis riik on saapa kujuline?",a:"Mis on Itaalia"},
+    ]
+  },{
+    c: "Planeedid",
+    qs: [
+      { p:100,q:"Mitmes planeet on päikesest Maa?",a:"Mis on kolmas"},
+      { p:200,q:"Mis on päikesesüsteemis esimene planeet päikesest?",a:"Mis on Merkuur"},
+      { p:300,q:"Mis planeedist on inspireeritud Marsimehe vitamiinid?",a:"Mis on Marss"},
+      { p:400,q:"Mis oli selle planeedi nimi, mis eemaldati päikesesüsteemist?",a:"Mis on Pluuto"},
+      { p:500,q:"Miks on Merkuuril võimatu elada?",a:"Mis on, sest seal on liiga kuum"},
+    ]
+  },{
+    c: "Varia",
+    qs: [
+      { p:100,q:"Millal tuuakse jõuludel tuppa kuusepuu?",a:"Mis on 23. detsember"},
+      { p:200,q:"Kes on kirjutanud raamatu \"Leiutajateküla Lotte\"?",a:"Kes on Andrus Kivirähk"},
+      { p:300,q:"Mis on Austraalia pealinn?",a:"Mis on Canberra"},
+      { p:400,q:"Millest on tulnud jõuluvana välimus?",a:"Mis on Coca Cola reklaamist"},
+      { p:500,q:"Mitu kilomeetrit on Tallinnast Helsingisse?",a:"Mis on 76 km"},
+    ]
+  }
+]
 
-    function debounce(func, wait, immediate) {
-      let timeout;
-      return function() {
-        const context = this,
-          args = arguments;
-        let later = function() {
-          timeout = null;
-          if (!immediate) func.apply(context, args);
-        };
-        const callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-      };
-    }
+const text = JSON.stringify(gameData)
+const en = compress(text)
+console.log(en)
+// const de = b64DecodeUnicode(en)
+// console.log(de)
+// console.log(de === text)
+console.log(text)
+console.log(text.length)
+console.log(en.length)
 
-    function ready(fn) {
-      if (document.readyState !== 'loading' && document.body) fn();
-      else document.addEventListener('DOMContentLoaded', fn);
-    }
+const teams = document.getElementById()
+const teams = document.getElementById()
 
-    if (!Math.log2) Math.log2 = (x) => Math.log(x) * Math.LOG2E
+class question {
+  constructor(question, answer, points) {
 
-    const shrink_cell_cache = {};
-    let enable_caching = true;
+  }
+}
 
-    function shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms) {
-      let cached;
-      let cache_key;
-      if (enable_caching) {
-        cache_key = [max_width, max_height, $cell.innerHTML].join(".");
-        cached = shrink_cell_cache[cache_key];
-      } else
-        return _shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms);
+class category {
 
-      if (cached) {
-        $scaler.style.fontSize = cached.font_size + "px";
-        $scaler.style.transform = (transforms || "") + " scale(" + cached.scale + ") ";
-      } else
-        shrink_cell_cache[cache_key] = _shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms);
-    }
+  constructor(name) {
+    this.name = name;
+    this.questions = [];
+    this.asked = false
+    this.answeredBy = null;
+  }
 
-    function shrink_in_place($cell, max_font_size, min_font_size) {
-      const div = $cell;
+  addQuestion(question) {
+    this.questions.push(question)
+  }
+  removeQuestion(question) {
+    // this.questions.indexOf(question)
+  }
+  getQuestions() {
 
-      const a = { length: max_font_size + 1 }
-      let font_size = binarySearch(a, function(el, array, font_size) {
-        div.style.fontSize = font_size + "px";
-        const isHorizontalScrollbar = div.scrollWidth > div.clientWidth;
-        const isVerticalScrollbar = div.scrollHeight > div.clientHeight;
-        return isHorizontalScrollbar || isVerticalScrollbar
-      });
-      font_size = font_size - 1
-      font_size = Math.max(min_font_size, Math.min(font_size, max_font_size));
+  }
+
+  createQuestion(question, answer, points) {
+
+    return this;
+  }
+}
+
+class Team {
+
+  constructor(name, points=0) {
+    this.name = name
+    this.points = points
+    this._active = true
+    this.answered = []
+  }
+
+  setPoints(points) {
+    if (!Number.isInteger(points)) throw new Error('Type must be intiger')
+    this.points = points
+  }
+  getPoints() {
+    return this.points
+  }
+  setName(name) {
+    this.name = name
+  }
+  getName() {
+    return this.name
+  }
+  active() {
+    this._active = true
+  }
+  inactive() {
+    this._active = false
+  }
+}
+
+class Kuldvillak {
+
+  constructor(props) {
+    this.teams = []
+    this.categories = []
+    this.questions = []
+  }
+
+  addTeam() {
+
+  }
+
+  removeTeam() {
+
+  }
+
+}
+
+
+
+function removeClass(selector, cls) {
+  for (const el of document.querySelectorAll(selector))
+    el.classList.remove(cls);
+}
+
+function debounce(func, wait, immediate) {
+  let timeout;
+  if (immediate) return func
+  return () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(func, wait);
+  };
+}
+
+  function ready(fn) {
+    if (document.readyState !== 'loading' && document.body) fn();
+    else document.addEventListener('DOMContentLoaded', fn);
+  }
+
+  if (!Math.log2) Math.log2 = (x) => Math.log(x) * Math.LOG2E
+
+  const shrink_cell_cache = {};
+  let enable_caching = true;
+
+  function shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms) {
+    let cached;
+    let cache_key;
+    if (enable_caching) {
+      cache_key = [max_width, max_height, $cell.innerHTML].join(".");
+      cached = shrink_cell_cache[cache_key];
+    } else
+      return _shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms);
+
+    if (cached) {
+      $scaler.style.fontSize = cached.font_size + "px";
+      $scaler.style.transform = (transforms || "") + " scale(" + cached.scale + ") ";
+    } else
+      shrink_cell_cache[cache_key] = _shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms);
+  }
+
+  function shrink_in_place($cell, max_font_size, min_font_size) {
+    const div = $cell;
+
+    const a = { length: max_font_size + 1 }
+    let font_size = binarySearch(a, function(el, array, font_size) {
       div.style.fontSize = font_size + "px";
-      return font_size;
-    }
-
-    function binarySearch(array, pred) {
-      let lo = -1, hi = array.length;
-      while (1 + lo < hi) {
-        const mi = lo + ((hi - lo) >> 1);
-        if (pred(array[mi], array, mi)) hi = mi;
-        else lo = mi;
-      }
-      return hi;
-    }
-
-    function _shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms, min_font_size) {
-      if (min_font_size === undefined)
-        min_font_size = 1;
-
-      let font_size = Math.max(min_font_size, max_font_size);
-
-      if (!$scaler) return { font_size: font_size }
-
-      $cell.style.fontSize = "";
-      $scaler.style.fontSize = font_size + "px";
-      $scaler.style.transform = "";
-
-      const extra_width = 0
-      const extra_height = 0
-
-      const bbox = getBoundingClientRect($scaler);
-      const w = bbox.width;
-      const h = bbox.height;
-      const scale = Math.min(1, Math.min((max_width - extra_width) / w, (max_height - extra_height) / h));
-      if (scale !== 1) {
-        //debugger;
-      }
-      $scaler.style.transform = (transforms || "") + " scale(" + scale + ") ";
-
-      return { font_size: font_size, scale: scale };
-    }
-
-    function getBoundingClientRect(el) {
-      const bbox = el.getBoundingClientRect();
-
-      return {
-        top: bbox.top + (window.scrollY || document.documentElement.scrollTop || 0),
-        left: bbox.left + (window.scrollX || document.documentElement.scrollLeft || 0),
-        width: bbox.width,
-        height: bbox.height,
-        x: bbox.x,
-        y: bbox.y
-      }
-    }
-
-    function matches(el, selector) {
-      return (el.matches || el.matchesSelector || el.msMatchesSelector || el.mozMatchesSelector || el.webkitMatchesSelector || el.oMatchesSelector).call(el, selector);
-    }
-
-    function on(eventName, elementSelector, handler, extra) {
-      const names = eventName.split(" ");
-      for (let i = 0; i < names.length; i++) {
-        const eventName = names[i];
-        document.addEventListener(eventName, function(e) {
-          // loop parent nodes from the target to the delegation node
-          for (let target = e.target; target && target !== this; target = target.parentNode) {
-            if (matches(target, elementSelector)) {
-              handler.call(target, e);
-              break;
-            }
-          }
-        }, extra || false);
-      }
-    }
-
-    function closest(element, selector) {
-      do {
-        if (matches(element, selector)) return element;
-      } while (element = element.parentElement);
-      return null;
-    }
-
-    function prepwork(cell, scale_factor) {
-      if (scale_factor === undefined) scale_factor = 1;
-
-      const width = cell.parentElement.clientWidth;
-      const height = cell.parentElement.clientHeight;
-      const inner = cell.querySelectorAll(".cell-inner")[0];
-
-      shrink_cell(cell, inner, width * scale_factor, height * scale_factor, 32, "");
-      return inner
-    }
-
-    function minirender(grid, question_scale_factor) {
-      if (question_scale_factor === undefined)
-        question_scale_factor = 1;
-
-      miniresize(grid, grid.querySelectorAll(".grid-row-cats .cell"), true, 1);
-      miniresize(grid, grid.querySelectorAll(".grid-row-questions .cell"), false, question_scale_factor);
-    }
-
-    function miniresize(grid, cells, is_cats, scale_factor) {
-      if (is_cats) {
-        const cat = grid.querySelectorAll(".grid-row-cats")[0]
-        cat.style.height = "auto";
-        let max_height = 0;
-        for (const cell of cells) {
-          const inner = prepwork(cell);
-          cell.client_height = inner.clientHeight;
-          max_height = Math.max(max_height, inner.clientHeight);
-        }
-        cat.style.height = max_height + "px";
-      } else
-        for (const cell of cells)
-          prepwork(cell, scale_factor)
-
-    }
-
-    let modal = function() {}
-
-    let game = {}
-    let mode = "play"
-    let grid = null;
-
-    function getCurrentState() {
-      const teams = [];
-      const teams_dom = document.querySelectorAll(".team");
-      for (let i = 0; i < teams_dom.length; i++) {
-        const t = teams_dom[i];
-        const name = t.querySelectorAll(".name")[0].textContent;
-        const points = t.querySelectorAll(".points")[0].textContent;
-        teams[i] = { name: name, points: points }
-      }
-
-      const inerts = {};
-      const inert_dom = document.querySelectorAll(".grid-row-questions .inert");
-      for (let i = 0; i < inert_dom.length; i++) {
-        const id = inert_dom[i].getAttribute("id");
-        inerts[id] = true;
-      }
-
-      return {
-        "teams": teams,
-        "inerts": inerts,
-      }
-    }
-
-    function getOldState() {
-      let old_state;
-      try {
-        old_state = localStorage.getItem("game-2161995")
-      } catch (e) {
-        return null;
-      }
-      return old_state ? JSON.parse(old_state) : null;
-    }
-
-    function clearState() {
-      try {
-        localStorage.removeItem("game-2161995");
-      } catch (e) {}
-    }
-
-    function resize() {
-      let bbox_teams = getBoundingClientRect(document.getElementById("teams"))
-      let rows = document.querySelectorAll(".grid-row").length;
-      let h;
-      if (bbox_teams.height === 0) h = window.innerHeight;
-      else h = bbox_teams.top + ((window.innerHeight - bbox_teams.height) / (rows)) / 4
-      
-      grid.style.height = h + "px";
-      minirender(grid, .8);
-    }
-
-    ready(function() {
-      grid = document.querySelectorAll(".grid")[0];
-      // window.addEventListener("resize", debounce(resize, 10, false));
-      window.addEventListener("resize", resize);
-      resize();
-      renderState(initial_state);
-
-      window.addEventListener("keydown", function(e) {
-        const ESC = 27
-        const SPACE = 32
-        if (modal.is_open) {
-          if (e.keyCode === ESC) {
-            e.preventDefault();
-            modal.hide();
-          } else if (e.keyCode === SPACE) {
-            e.preventDefault();
-            modal.reveal();
-          }
-        }
-      }, false);
-
-      const debouncedSaveState = debounce(function() {
-        try {
-          localStorage.setItem("game-2161995", JSON.stringify(getCurrentState()))
-        } catch (e) {
-
-        }
-      }, 100, false)
-
-      on("keyup change input blur focus", "#teams .name, #teams .points", debouncedSaveState);
-
-      on("click", "#re-init", function(e) {
-        e.preventDefault();
-        if (confirm("This will clear the scores and team names, and start a new game. Click OK if you want to do this")) {
-          clearState();
-          game.init(true);
-        }
-      })
-
-      on("click", "#answer-button", function(e) {
-        modal.reveal();
-      })
-
-      on("click", "#continue-button", function(e) {
-        modal.hide();
-      })
-
-      on("click", ".grid-row-questions .grid-cell", function(e) {
-        modal.show(this);
-      });
-
-      // handle points clicks
-      on("click", ".minus, .plus", function(e) {
-        const $team = closest(this, ".team");
-        const $points = $team.querySelectorAll(".points")[0];
-        const points = parseInt($points.innerText);
-        if (isNaN(points)) {
-          alert("Error! The score for this team is not a number. You need to edit the score and change it to a number.");
-          return
-        }
-        const active_question = document.querySelectorAll(".active-question .cell-inner")[0];
-        const fallback = document.querySelectorAll(".grid-row-questions .cell-inner")[0];
-        let val = parseInt(active_question ? active_question.innerText : fallback.innerText);
-        if (this.classList.contains("minus")) {
-          val = -val;
-        }
-        $points.innerText = points + val;
-        if (active_question) {
-          document.querySelectorAll(".active-question")[0].classList.add("inert");
-        }
-        debouncedSaveState();
-      });
+      const isHorizontalScrollbar = div.scrollWidth > div.clientWidth;
+      const isVerticalScrollbar = div.scrollHeight > div.clientHeight;
+      return isHorizontalScrollbar || isVerticalScrollbar
     });
+    font_size = font_size - 1
+    font_size = Math.max(min_font_size, Math.min(font_size, max_font_size));
+    div.style.fontSize = font_size + "px";
+    return font_size;
+  }
 
-    initial_state = { "page": "menu" }
+  function binarySearch(array, pred) {
+    let lo = -1, hi = array.length;
+    while (1 + lo < hi) {
+      const mi = lo + ((hi - lo) >> 1);
+      if (pred(array[mi], array, mi)) hi = mi;
+      else lo = mi;
+    }
+    return hi;
+  }
 
-    try {
-      history.replaceState(initial_state, "JeopardyLabs")
-    } catch (e) {}
+  function _shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms, min_font_size) {
+    if (min_font_size === undefined)
+      min_font_size = 1;
 
-    game.first_render = true;
+    let font_size = Math.max(min_font_size, max_font_size);
 
-    game.init = function(clear) {
-      let val = document.querySelectorAll("#options select")[0].value;
+    if (!$scaler) return { font_size: font_size }
 
-      if (isNaN(val)) {
-        val = 0
-        do {
-          const n = prompt("Enter the number of teams you have");
-          val = parseInt(n, 10) || 0;
-        } while (val <= 0);
-      }
+    $cell.style.fontSize = "";
+    $scaler.style.fontSize = font_size + "px";
+    $scaler.style.transform = "";
 
-      renderState({ "page": "game" })
-      // add all the teams
-      document.getElementById("teams").style.display = "flex";
-      let teams = document.querySelectorAll("#teams .team");
+    const extra_width = 0
+    const extra_height = 0
 
-      for (const team of teams) team.style.display = "none";
+    const bbox = getBoundingClientRect($scaler);
+    const w = bbox.width;
+    const h = bbox.height;
+    const scale = Math.min(1, Math.min((max_width - extra_width) / w, (max_height - extra_height) / h));
+    if (scale !== 1) {
+      //debugger;
+    }
+    $scaler.style.transform = (transforms || "") + " scale(" + scale + ") ";
 
-      for (let i = 0; i < val; i++) {
-        var t = teams[i];
-        if (!t) {
-          var t = teams[0].cloneNode(true)
-          teams[0].parentElement.appendChild(t);
-          t.querySelectorAll(".name")[0].textContent = "Team " + (i + 1)
-          t.querySelectorAll(".points")[0].textContent = "0"
-        } else {
-          t = teams[i]
-        }
-        t.style.display = "block";
-      }
+    return { font_size: font_size, scale: scale };
+  }
 
-      teams = document.querySelectorAll("#teams .team");
-      if (game.first_render) {
-        const old_state = getOldState();
-        if (old_state) {
-          for (let i = 0; i < val; i++) {
-            const t = teams[i];
-            if (old_state.teams[i]) {
-              const name = old_state.teams[i].name;
-              const points = old_state.teams[i].points;
-              t.querySelectorAll(".name")[0].textContent = name
-              t.querySelectorAll(".points")[0].textContent = points
-            }
+  function getBoundingClientRect(el) {
+    const bbox = el.getBoundingClientRect();
+
+    return {
+      top: bbox.top + (window.scrollY || document.documentElement.scrollTop || 0),
+      left: bbox.left + (window.scrollX || document.documentElement.scrollLeft || 0),
+      width: bbox.width,
+      height: bbox.height,
+      x: bbox.x,
+      y: bbox.y
+    }
+  }
+
+  function matches(el, selector) {
+    return (el.matches || el.matchesSelector || el.msMatchesSelector || el.mozMatchesSelector || el.webkitMatchesSelector || el.oMatchesSelector).call(el, selector);
+  }
+
+  function on(eventName, elementSelector, handler, extra) {
+    const names = eventName.split(" ");
+    for (let i = 0; i < names.length; i++) {
+      const eventName = names[i];
+      document.addEventListener(eventName, function(e) {
+        // loop parent nodes from the target to the delegation node
+        for (let target = e.target; target && target !== this; target = target.parentNode) {
+          if (matches(target, elementSelector)) {
+            handler.call(target, e);
+            break;
           }
-
-          // restore the inert questions
-          const inerts = old_state.inerts;
-          for (const id in inerts) {
-            try {
-              document.getElementById(id).classList.add("inert");
-            } catch (e) {}
-          }
         }
-      } else if (clear) {
+      }, extra || false);
+    }
+  }
+
+  function closest(element, selector) {
+    do {
+      if (matches(element, selector)) return element;
+    } while (element = element.parentElement);
+    return null;
+  }
+
+  function prepwork(cell, scale_factor) {
+    if (scale_factor === undefined) scale_factor = 1;
+
+    const width = cell.parentElement.clientWidth;
+    const height = cell.parentElement.clientHeight;
+    const inner = cell.querySelectorAll(".cell-inner")[0];
+
+    shrink_cell(cell, inner, width * scale_factor, height * scale_factor, 32, "");
+    return inner
+  }
+
+  function minirender(grid, question_scale_factor) {
+    if (question_scale_factor === undefined)
+      question_scale_factor = 1;
+
+    miniresize(grid, grid.querySelectorAll(".grid-row-cats .cell"), true, 1);
+    miniresize(grid, grid.querySelectorAll(".grid-row-questions .cell"), false, question_scale_factor);
+  }
+
+  function miniresize(grid, cells, is_cats, scale_factor) {
+    if (is_cats) {
+      const cat = grid.querySelectorAll(".grid-row-cats")[0]
+      cat.style.height = "auto";
+      let max_height = 0;
+      for (const cell of cells) {
+        const inner = prepwork(cell);
+        cell.client_height = inner.clientHeight;
+        max_height = Math.max(max_height, inner.clientHeight);
+      }
+      cat.style.height = max_height + "px";
+    } else
+      for (const cell of cells)
+        prepwork(cell, scale_factor)
+  }
+
+  let modal = function() {}
+
+  let game = {}
+  let mode = "play"
+  let grid = null;
+
+  function getCurrentState() {
+    const teams = [];
+    const teams_dom = document.querySelectorAll(".team");
+    for (let i = 0; i < teams_dom.length; i++) {
+      const t = teams_dom[i];
+      const name = t.querySelectorAll(".name")[0].textContent;
+      const points = t.querySelectorAll(".points")[0].textContent;
+      teams[i] = { name: name, points: points }
+    }
+
+    const inerts = {};
+    const inert_dom = document.querySelectorAll(".grid-row-questions .inert");
+    for (let i = 0; i < inert_dom.length; i++) {
+      const id = inert_dom[i].getAttribute("id");
+      inerts[id] = true;
+    }
+
+    return {
+      "teams": teams,
+      "inerts": inerts,
+    }
+  }
+
+  function getOldState() {
+    const old_state = localStorage.getItem("game-2161995")
+    return old_state ? JSON.parse(old_state) : null;
+  }
+
+  function clearState() {
+    localStorage.removeItem("game-2161995");
+  }
+
+  function resize() {
+    let bbox_teams = getBoundingClientRect(document.getElementById("teams"))
+    let rows = document.querySelectorAll(".grid-row").length;
+    let h;
+    if (bbox_teams.height === 0) h = window.innerHeight;
+    else h = bbox_teams.top + ((window.innerHeight - bbox_teams.height) / (rows)) / 4
+
+    grid.style.height = h + "px";
+    minirender(grid, .8);
+  }
+
+  ready(function() {
+    grid = document.querySelectorAll(".grid")[0];
+    window.addEventListener("resize", debounce(resize, 10, false));
+    window.addEventListener("resize", resize);
+    resize();
+    renderState(initial_state);
+
+    window.addEventListener("keydown", (e) => {
+      const ESC = 27
+      const SPACE = 32
+      if (modal.is_open) {
+        if (e.keyCode === ESC) {
+          e.preventDefault();
+          modal.hide();
+        } else if (e.keyCode === SPACE) {
+          e.preventDefault();
+          modal.reveal();
+        }
+      }
+    }, false);
+
+    const debouncedSaveState = debounce(() =>
+      localStorage.setItem("game-2161995", JSON.stringify(getCurrentState())), 100, false)
+
+    on("keyup change input blur focus", "#teams .name, #teams .points", debouncedSaveState);
+
+    on("click", "#re-init", (e) => {
+      e.preventDefault();
+      if (confirm("This will clear the scores and team names, and start a new game. Click OK if you want to do this")) {
+        clearState();
+        game.init(true);
+      }
+    })
+
+    on("click", "#answer-button", () => modal.reveal())
+    on("click", "#continue-button", () => modal.hide())
+    on("click", ".grid-row-questions .grid-cell", function() {modal.show(this)})
+
+    // handle points clicks
+    on("click", ".minus, .plus", function(e) {
+      const $team = closest(this, ".team");
+      const $points = $team.querySelectorAll(".points")[0];
+      const points = parseInt($points.innerText);
+      if (isNaN(points)) {
+        alert("Error! The score for this team is not a number. You need to edit the score and change it to a number.");
+        return
+      }
+      const active_question = document.querySelectorAll(".active-question .cell-inner")[0];
+      const fallback = document.querySelectorAll(".grid-row-questions .cell-inner")[0];
+      let val = parseInt(active_question ? active_question.innerText : fallback.innerText);
+      if (this.classList.contains("minus")) {
+        val = -val;
+      }
+      $points.innerText = points + val;
+      if (active_question) {
+        document.querySelectorAll(".active-question")[0].classList.add("inert");
+      }
+      debouncedSaveState();
+    });
+  });
+
+  initial_state = { "page": "menu" }
+  history.replaceState(initial_state, "Game")
+  game.first_render = true;
+
+  game.init = function(clear) {
+    let val = document.querySelectorAll("#options select")[0].value;
+
+    if (isNaN(val)) {
+      val = 0
+      do {
+        const n = prompt("Enter the number of teams you have");
+        val = parseInt(n, 10) || 0;
+      } while (val <= 0);
+    }
+
+    renderState({ "page": "game" })
+    // add all the teams
+    document.getElementById("teams").style.display = "flex";
+    let teams = document.querySelectorAll("#teams .team");
+
+    for (const team of teams) team.style.display = "none";
+
+    for (let i = 0; i < val; i++) {
+      var t = teams[i];
+      if (!t) {
+        var t = teams[0].cloneNode(true)
+        teams[0].parentElement.appendChild(t);
+        t.querySelectorAll(".name")[0].textContent = "Team " + (i + 1)
+        t.querySelectorAll(".points")[0].textContent = "0"
+      } else {
+        t = teams[i]
+      }
+      t.style.display = "block";
+    }
+
+    teams = document.querySelectorAll("#teams .team");
+    if (game.first_render) {
+      const old_state = getOldState();
+      if (old_state) {
         for (let i = 0; i < val; i++) {
           const t = teams[i];
-          t.querySelectorAll(".name")[0].textContent = "Team " + (i + 1)
-          t.querySelectorAll(".points")[0].textContent = "0"
+          if (old_state.teams[i]) {
+            const name = old_state.teams[i].name;
+            const points = old_state.teams[i].points;
+            t.querySelectorAll(".name")[0].textContent = name
+            t.querySelectorAll(".points")[0].textContent = points
+          }
         }
-        removeClass(".inert", "inert");
-      } else { // coming just restore
 
+        // restore the inert questions
+        const inerts = old_state.inerts;
+        for (const id in inerts) {
+          try {
+            document.getElementById(id).classList.add("inert");
+          } catch (e) {}
+        }
       }
+    } else if (clear) {
+      for (let i = 0; i < val; i++) {
+        const t = teams[i];
+        t.querySelectorAll(".name")[0].textContent = "Team " + (i + 1)
+        t.querySelectorAll(".points")[0].textContent = "0"
+      }
+      removeClass(".inert", "inert");
+    } else {} // coming just restore
 
-      resize()
+    resize()
+    history.pushState({ "page": "game" }, "Game");
+    game.first_render = false;
+  }
 
+  function hideModal() {
+    modal.is_open = false;
+    const div = document.getElementById("question-modal");
+    div.style.display = "none";
+    div.classList.remove("expanded");
+    div.style.borderWidth = "3px";
+    div.querySelectorAll(".modal-inner")[0].innerHTML = "";
+  }
+
+  function renderMenu() {
+    const old_state = getOldState() || !game.first_render
+    if (!game.first_render) {
+      document.getElementById("submit").value = "Continue"
+      document.getElementById("reset-all").style.display = ""
+    } else if (old_state) {
+      document.getElementById("submit").value = "Continue"
+      document.getElementById("reset-all").style.display = ""
+      let teams = old_state.teams.length;
+      let chooser = document.getElementById("team-chooser")
+      if (teams > 10) {
+        let opt = document.createElement("option");
+        opt.setAttribute("value", teams);
+        opt.textContent = teams + " teams"
+        chooser.insertBefore(opt, document.getElementById("last-option"));
+      }
+      document.getElementById("team-chooser").value = teams;
+    } else {
+      document.getElementById("submit").value = "Start"
+      document.getElementById("reset-all").style.display = "none"
+    }
+  }
+
+  function renderState(state) {
+    document.getElementById("options").style.display = "none";
+    document.getElementById("teams").style.display = "none";
+    document.getElementById("gameplay").style.filter = "";
+    hideModal();
+
+    if (state.page === "menu") {
+      document.getElementById("options").style.display = "block";
+      renderMenu();
+    } else {
+      document.getElementById("teams").style.display = "";
+      document.getElementById("gameplay").style.filter = "blur(0px)";
+      if (state.page === "slide")
+        modal.show(document.getElementById(state.cell), true);
+    }
+  }
+
+  window.onpopstate = () => renderState(window.history.state);
+
+  function trimHTML(el) {
+    let treeWalker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, null, false);
+    while (treeWalker.nextNode()) {
+      let node = treeWalker.currentNode;
+    }
+    let nodes_to_delete = [];
+    do {
+      let node = treeWalker.currentNode;
+      if (node.nodeType === 3 && (node.data || "").trim() === "") {
+        nodes_to_delete.push(node);
+      } else if (node.tagName === "SCRIPT") {
+
+      } else if (node.tagName === "BR") {
+        nodes_to_delete.push(node);
+      } else if (node.tagName === "P" && (node.innerText || "").trim() === "") {
+        nodes_to_delete.push(node);
+      } else {
+        break;
+      }
+    } while (treeWalker.previousNode())
+
+    for (const del_node of nodes_to_delete)
+      del_node.parentElement.removeChild(del_node);
+  }
+
+  modal.reveal = function() {
+    let q = document.querySelectorAll("#question-modal .question")[0];
+    q.style.display = "block";
+
+    function scrollTo(element, to, duration) {
+      let start = element.scrollTop,
+        change = to - start,
+        currentTime = 0,
+        increment = 20;
+
+      let animateScroll = function() {
+        currentTime += increment;
+        element.scrollTop = easeInOutQuad(currentTime, start, change, duration);
+        if (currentTime < duration)
+          setTimeout(animateScroll, increment);
+      };
+      animateScroll();
+    }
+
+    //t = current time
+    //b = start value
+    //c = change in value
+    //d = duration
+    function easeInOutQuad(t, b, c, d) {
+      t /= d / 2;
+      if (t < 1) return c / 2 * t * t + b;
+      t--;
+      return -c / 2 * (t * (t - 2) - 1) + b;
+    }
+
+    let modal_inner = document.querySelectorAll('#question-modal .modal-inner')[0]
+    let start_of_modal = getBoundingClientRect(modal_inner).top;
+    let start_of_question = getBoundingClientRect(q).top;
+    let val = start_of_question - start_of_modal;
+    scrollTo(modal_inner, val, 250)
+
+    setTimeout(() => q.classList.add("reveal"), 0)
+
+    document.querySelectorAll(".active-question")[0].classList.add("inert");
+  }
+
+  modal.show = function(cell, no_push_state) {
+    removeClass(".active-question", "active-question");
+    cell.classList.add("active-question");
+
+    let col = cell.getAttribute("data-col");
+    let category = document.querySelectorAll(".grid-row-cats .cat-cell")[col].innerText;
+    let points = cell.querySelectorAll(".cell-inner")[0].innerText;
+    document.querySelectorAll("#question-title")[0].innerText = category + " " + points
+
+    let bbox = cell.getBoundingClientRect();
+    let div_modal = document.getElementById('question-modal')
+    div_modal.style.display = "block";
+    div_modal.style.opacity = "0";
+
+    let inner = document.querySelectorAll("#question-modal .modal-inner")[0];
+    inner.innerHTML = cell.querySelectorAll(".answer")[0].outerHTML + "\n" + cell.querySelectorAll(".question")[0].outerHTML;
+
+    if (!no_push_state) {
+      history.pushState({ "page": "slide", "cell": cell.getAttribute("id") }, "Game");
+    }
+
+    setTimeout(function() {
+      let q = document.querySelectorAll('#question-modal .answer')[0];
       try {
-        history.pushState({ "page": "game" }, "JeopardyLabs");
+        q.querySelectorAll("video, audio").get(0).play();
       } catch (e) {}
 
-      game.first_render = false;
-    }
-
-    function hideModal() {
-      modal.is_open = false;
-      const div = document.getElementById("question-modal");
-      div.style.display = "none";
-      div.classList.remove("expanded");
-      div.style.borderWidth = "3px";
-      div.querySelectorAll(".modal-inner")[0].innerHTML = "";
-    }
-
-    function renderMenu() {
-      const old_state = getOldState() || !game.first_render
-      if (!game.first_render) {
-        document.querySelectorAll("#submit")[0].value = "Continue"
-        document.querySelectorAll("#reset-all")[0].style.display = ""
-      } else if (old_state) {
-        document.querySelectorAll("#submit")[0].value = "Continue"
-        document.querySelectorAll("#reset-all")[0].style.display = ""
-        let teams = old_state.teams.length;
-        let chooser = document.getElementById("team-chooser")
-        if (teams > 10) {
-          let opt = document.createElement("option");
-          opt.setAttribute("value", teams);
-          opt.textContent = teams + " teams"
-          chooser.insertBefore(opt, document.getElementById("last-option"));
+      try {
+        const iframe = q.querySelectorAll("iframe")[0]
+        const src = iframe.getAttribute("src") || "";
+        const a = document.createElement("a");
+        a.href = src
+        if (a.hostname === "www.youtube.com") {
+          a.search = (a.search || "?") + '&autoplay=1'
+          iframe.contentWindow.location.replace(a.toString());
+          //iframe.setAttribute('src', a.toString());
         }
-        document.getElementById("team-chooser").value = teams;
-      } else {
-        document.querySelectorAll("#submit")[0].value = "Start"
-        document.querySelectorAll("#reset-all")[0].style.display = "none"
-      }
-    }
+      } catch (e) {}
+    }, 500);
+
+    document.querySelectorAll('#question-modal .modal-body .modal-inner')[0].scrollTop = 0;
+
+    trimHTML(document.querySelectorAll('#question-modal .answer')[0]);
+    trimHTML(document.querySelectorAll('#question-modal .question')[0]);
+
+    // the height of the contents of the modal should be...
+    /* [MODAL HEADER]
+     *     ^
+     *     |
+     *     |    <--- this tall
+     *     v
+     * [TEAMS BAR]
+     */
+    let content_bbox = getBoundingClientRect(document.querySelectorAll('#question-modal .modal-body')[0])
+    let position_of_top = content_bbox.top;
+    let teams = document.querySelectorAll("#teams")[0]
+    let position_of_bottom = getBoundingClientRect(teams).top || window.innerHeight;
+    let h = position_of_bottom - position_of_top - 20 // 20 pixels for some extra room
+
+    document.querySelectorAll('#question-modal .modal-inner')[0].style.maxHeight = h + "px";
+    document.querySelectorAll('#question-modal .modal-body')[0].style.height = h + "px";
 
 
-    function renderState(state) {
-      document.querySelectorAll("#options")[0].style.display = "none";
-      document.querySelectorAll("#teams")[0].style.display = "none";
-      document.querySelectorAll("#gameplay")[0].style.filter = "";
-      hideModal();
+    let q = document.querySelectorAll("#question-modal .question")[0];
+    q.style.display = "block";
+    let content = document.querySelectorAll('#question-modal .modal-inner')[0];
+    shrink_in_place(content, 100, 24);
+    q.style.display = "none";
 
 
-      if (state.page === "menu") {
-        document.querySelectorAll("#options")[0].style.display = "block";
-        renderMenu();
-      } else if (state.page === "game") {
-        document.getElementById("teams").style.display = "";
-        document.querySelectorAll("#gameplay")[0].style.filter = "blur(0px)";
-      } else if (state.page === "slide") {
-        document.getElementById("teams").style.display = "";
-        document.querySelectorAll("#gameplay")[0].style.filter = "blur(0px)";
-        modal.show(document.getElementById(state.cell), true);
-      }
-    }
+    div_modal.style.transform = "translate(" + bbox.left + "px, " + bbox.top + "px) scale(" + (bbox.width / window.innerWidth) + ", " + (bbox.height / window.innerHeight) + ")"
+    div_modal.style.opacity = "1";
 
-    window.onpopstate = (event) => renderState(window.history.state);
+    removeClass(".expanded", "expanded");
 
-    function trimHTML(el) {
-      let treeWalker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, null, false);
-      while (treeWalker.nextNode()) {
-        let node = treeWalker.currentNode;
-      }
-      let nodes_to_delete = [];
-      do {
-        let node = treeWalker.currentNode;
-        if (node.nodeType === 3 && (node.data || "").trim() === "") {
-          nodes_to_delete.push(node);
-        } else if (node.tagName === "SCRIPT") {
+    setTimeout(() => {
+      div_modal.classList.add("expanded");
+      div_modal.style.top = "0";
+      div_modal.style.left = "0";
+      div_modal.style.bottom = "0";
+      div_modal.style.right = "0";
+      div_modal.style.width = "100%";
+      div_modal.style.height = "100%";
+      div_modal.style.borderWidth = "0";
+      div_modal.style.transform = "translate(0px, 0px) scale(1)"
+    }, 50);
+    modal.is_open = true; // flag for the keyboard event
+  }
 
-        } else if (node.tagName === "BR") {
-          nodes_to_delete.push(node);
-        } else if (node.tagName === "P" && (node.innerText || "").trim() === "") {
-          nodes_to_delete.push(node);
-        } else {
-          break;
-        }
-      } while (treeWalker.previousNode())
-      for (let i = 0; i < nodes_to_delete.length; i++) {
-        try {
-          nodes_to_delete[i].parentElement.removeChild(nodes_to_delete[i]);
-        } catch (e) {
-          console.log("passing");
-        }
-      }
-    }
+  modal.hide = () => {
+    renderState({ "page": "game" });
+  }
 
-    modal.reveal = function() {
-      let q = document.querySelectorAll("#question-modal .question")[0];
-      q.style.display = "block";
-
-      function scrollTo(element, to, duration) {
-        let start = element.scrollTop,
-          change = to - start,
-          currentTime = 0,
-          increment = 20;
-
-        let animateScroll = function() {
-          currentTime += increment;
-          let val = easeInOutQuad(currentTime, start, change, duration);
-          element.scrollTop = val;
-          if (currentTime < duration) {
-            setTimeout(animateScroll, increment);
-          }
-        };
-        animateScroll();
-      }
-
-      //t = current time
-      //b = start value
-      //c = change in value
-      //d = duration
-      function easeInOutQuad(t, b, c, d) {
-        t /= d / 2;
-        if (t < 1) return c / 2 * t * t + b;
-        t--;
-        return -c / 2 * (t * (t - 2) - 1) + b;
-      }
-
-      let modal_inner = document.querySelectorAll('#question-modal .modal-inner')[0]
-      let original_val = modal_inner.scrollTop;
-      let start_of_modal = getBoundingClientRect(modal_inner).top;
-      let start_of_question = getBoundingClientRect(q).top;
-      let val = start_of_question - start_of_modal;
-      scrollTo(modal_inner, val, 250)
-
-      setTimeout(() => q.classList.add("reveal"), 0)
-
-      document.querySelectorAll(".active-question")[0].classList.add("inert");
-    }
-
-    modal.show = function(cell, no_push_state) {
-      removeClass(".active-question", "active-question");
-      cell.classList.add("active-question");
-
-      let col = cell.getAttribute("data-col");
-      let category = document.querySelectorAll(".grid-row-cats .cat-cell")[col].innerText;
-      let points = cell.querySelectorAll(".cell-inner")[0].innerText;
-      document.querySelectorAll("#question-title")[0].innerText = category + " " + points
-
-      let bbox = cell.getBoundingClientRect();
-      let div_modal = document.getElementById('question-modal')
-      div_modal.style.display = "block";
-      div_modal.style.opacity = 0;
-
-      let inner = document.querySelectorAll("#question-modal .modal-inner")[0];
-      inner.innerHTML = cell.querySelectorAll(".answer")[0].outerHTML + "\n" + cell.querySelectorAll(".question")[0].outerHTML;
-
-      if (!no_push_state) {
-        try {
-          console.log("pre length", window.history.length);
-          history.pushState({ "page": "slide", "cell": cell.getAttribute("id") }, "JeopardyLabs");
-          console.log("post length", window.history.length);
-        } catch (e) {}
-      }
-
-      setTimeout(function() {
-        let q = document.querySelectorAll('#question-modal .answer')[0];
-        try {
-          q.querySelectorAll("video, audio").get(0).play();
-        } catch (e) {}
-
-        try {
-          const iframe = q.querySelectorAll("iframe")[0]
-          const src = iframe.getAttribute("src") || "";
-          const a = document.createElement("a");
-          a.href = src
-          if (a.hostname === "www.youtube.com") {
-            a.search = (a.search || "?") + '&autoplay=1'
-            iframe.contentWindow.location.replace(a.toString());
-            //iframe.setAttribute('src', a.toString());
-          }
-        } catch (e) {}
-      }, 500);
-
-      document.querySelectorAll('#question-modal .modal-body .modal-inner')[0].scrollTop = 0;
-
-      trimHTML(document.querySelectorAll('#question-modal .answer')[0]);
-      trimHTML(document.querySelectorAll('#question-modal .question')[0]);
-
-      // the height of the contents of the modal should be...
-      /* [MODAL HEADER]
-       *     ^
-       *     |
-       *     |    <--- this tall
-       *     v
-       * [TEAMS BAR]
-       */
-      let content_bbox = getBoundingClientRect(document.querySelectorAll('#question-modal .modal-body')[0])
-      let position_of_top = content_bbox.top;
-      let teams = document.querySelectorAll("#teams")[0]
-      let position_of_bottom = getBoundingClientRect(teams).top || window.innerHeight;
-      let h = position_of_bottom - position_of_top - 20 // 20 pixels for some extra room
-
-      document.querySelectorAll('#question-modal .modal-inner')[0].style.maxHeight = h + "px";
-      document.querySelectorAll('#question-modal .modal-body')[0].style.height = h + "px";
-
-
-      let q = document.querySelectorAll("#question-modal .question")[0];
-      q.style.display = "block";
-      let content = document.querySelectorAll('#question-modal .modal-inner')[0];
-      let result = shrink_in_place(content, 100, 24);
-      q.style.display = "none";
-
-
-      div_modal.style.transform = "translate(" + bbox.left + "px, " + bbox.top + "px) scale(" + (bbox.width / window.innerWidth) + ", " + (bbox.height / window.innerHeight) + ")"
-      div_modal.style.opacity = 1;
-
-      removeClass(".expanded", "expanded");
-
-      setTimeout(() => {
-        div_modal.classList.add("expanded");
-        div_modal.style.top = 0;
-        div_modal.style.left = 0;
-        div_modal.style.bottom = 0;
-        div_modal.style.right = 0;
-        div_modal.style.width = "100%";
-        div_modal.style.height = "100%";
-        div_modal.style.borderWidth = 0;
-        div_modal.style.transform = "translate(0px, 0px) scale(1)"
-      }, 50);
-      modal.is_open = true; // flag for the keyboard event
-    }
-
-    modal.hide = () => {
-      backToGame()
-      renderState({ "page": "game" });
-    }
-
-    function backToGame() {
-      const state = window.history.state;
-      if (state.page === "slide") window.history.go(-1);
-    }
-
-    function backToMenu() {
-      renderState({ "page": "menu" });
-      const state = window.history.state;
-      if (state.page === "slide") window.history.go(-2);
-      else if (state.page === "game") window.history.go(-1);
-    }
+  function backToMenu() {
+    renderState({ "page": "menu" });
+  }
   </script>
 </head>
 
@@ -1734,6 +1742,13 @@
             <div class="back question">Mis on Pluuto</div>
           </div>
         </div>
+        <div class="cell-group grid-cell" id="cell-131833556" data-row="4" data-col="2">
+          <div class="cell points">
+            <div class="cell-inner">450</div>
+            <div class="front answer">Lõuna-Prantsusmaal asuv "kuulsate ja rikaste kuurort" ?</div>
+            <div class="back question">Mis on Saint Tropez</div>
+          </div>
+        </div>
       </div>
       <div class="grid-row grid-row-questions grid-last-row">
         <div class="cell-group grid-cell" id="cell-33183547" data-row="5" data-col="0">
@@ -1773,12 +1788,8 @@
         </div>
       </div>
     </div>
-    <div id="teams">
-      <a class="menu-picker" href="javascript:backToMenu('menu')">
-        MENU
-      </a>
 
-      <div style="display:flex; margin-left:auto; margin-right:auto; overflow:auto;">
+    <div id="teams">
         <div class="team" style="display:none">
           <h3 class="name" contenteditable="true">Team 1</h3>
           <h3 class="points" contenteditable="true">0</h3>
@@ -1787,8 +1798,8 @@
             <span class="minus">-</span>
           </div>
         </div>
-      </div>
     </div>
+
     <div id="question-modal" class="modal-wrapper">
       <div id="modal-header">
         <div id="continue-button">
@@ -1796,7 +1807,7 @@
         </div>
         <div id="question-title"></div>
         <div id="answer-button">
-          <div>Reveal Correct Response <kbd>Spacebar</kbd></div>
+          <div>Correct Response <kbd>Spacebar</kbd></div>
         </div>
       </div>
       <div class="modal-body">
@@ -1804,10 +1815,16 @@
       </div>
     </div>
   </div>
+
+  <span id="menu-picker" onclick="backToMenu()">
+    MENU
+  </span>
+
   <div id="options" class="modal-wrapper">
     <div class="modal">
       <h1>Kuldvillak</h1>
       <div id="team-chooser-wrapper">
+        <label for="team-chooser" hidden></label>
         <select id="team-chooser">
           <option value="0">No teams</option>
           <option value="1">1 team</option>
@@ -1822,7 +1839,9 @@
           <input type="button" id="re-init" value="Reset" />
         </span>
       </div>
-      <p id="fullscreen" style="display:none" align="center"><span id="windows" style="display:none">Press <kbd>F11</kbd></span> <span id="mac" style="display:none">Select menu option <kbd>View &gt; Enter Fullscreen</kbd></span> for full-screen mode</p>
+      <p id="fullscreen">
+        <span id="windows">Press <kbd>F11</kbd></span> <span id="mac">Select menu option <kbd>View &gt; Enter Fullscreen</kbd></span> for full-screen mode
+      </p>
       <script>
         if (window.navigator.platform.indexOf("Mac") === 0) {
           document.getElementById("fullscreen").style.display = "block";
