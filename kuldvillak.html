@@ -439,16 +439,12 @@
 
       display: flex;
       justify-content: center;
-
-      /*margin-left:auto;*/
-      /*margin-right:auto;*/
-      /*overflow:auto;*/
     }
 
     #teams .team {
       display: inline-block;
-      margin-left: 10px;
-      margin-right: 10px;
+      margin-left: 5px;
+      margin-right: 5px;
       border: 1px solid white;
       padding: 5px;
       background-color: white;
@@ -456,18 +452,28 @@
       border-top-right-radius: 2px;
     }
 
-    #teams h3.name {
+    #teams .name {
+      border: none;
       border-bottom: 2px solid black;
       text-align: center;
       color: black;
       display: inline-block;
       white-space: nowrap;
       min-width: 100px;
+      max-width: 100px;
+      font-size: 20px;
+      font-weight: 700;
     }
 
-    #teams h3.points {
+    #teams .points {
       background-color: #2a3698;
+      text-align: center;
       color: #fff;
+      border: none;
+      min-width: 100px;
+      max-width: 100px;
+      font-size: 20px;
+      font-weight: 700;
     }
 
     .pointer {
@@ -514,11 +520,26 @@
       display: none;
     }
 
-    #options select {
+    #game-chooser {
+      font-size: 2em;
+      color: white;
+      font-weight: 700;
+      background-color: transparent;
+      border: none;
+      margin-bottom: 1rem;
+    }
+    #game-chooser option {
+      color: black;
+      font-weight: 700;
+    }
+
+    #team-chooser {
       font-size: 22px;
       display: inline-block;
       height: 40px;
       -webkit-appearance: menulist-button;
+      max-width: 52px;
+      text-align: center;
     }
 
     #options input[type='button'] {
@@ -895,17 +916,15 @@
 
   <div id="options" class="modal-wrapper">
     <div class="modal">
-      <h1>Kuldvillak</h1>
-      <label for="team-chooser" hidden></label>
-      <select id="team-chooser">
-        <option value="0">No teams</option>
-        <option value="1">1 team</option>
-        <option value="2">2 teams</option>
-        <option value="3">3 teams</option>
-        <option value="4">4 teams</option>
-        <option value="5">5 teams</option>
-        <option id="last-option" value="more">Custom</option>
+      <select id="game-chooser">
+        <option value="g1364524">Kuldvillak</option>
+        <option value="g13564311">BESTVillak</option>
+        <option value="g12356315">EestiVillak</option>
+        <option value="g126136136">Audi</option>
       </select>
+      <label for="team-chooser">Teams:</label>
+      <input type="number" id="team-chooser" value="0"/>
+      <br>
       <input class="submit" type="button" id="submit" value="Start"/>
       <input type="button" id="reset-all" value="Reset"/>
       <p id="fullscreen">
@@ -937,6 +956,7 @@
     const gridEl = document.querySelectorAll(".grid")[0];
     const optionsEl = document.getElementById("options")
     const teamChooserEl = document.getElementById("team-chooser")
+    const gameChooserEl = document.getElementById("game-chooser")
     const teamsEl = document.getElementById("teams")
 
     const submitEl = document.getElementById("submit")
@@ -983,6 +1003,13 @@
       answered(team) {
         this.answeredBy.push(team)
       }
+      getState() {
+        return {
+          q:this.getQuestion(),
+          a:this.getAnswer(),
+          p:this.getPoints()
+        }
+      }
       hashCode() {
         let hash = 0;
         for (const chr of this.getQuestion() + this.getAnswer()) {
@@ -1005,7 +1032,7 @@
       }
       removeQuestion(question) {
         question.setCategory(null)
-        this.questions.slice(this.questions.indexOf(question), 1)
+        this.questions.splice(this.questions.indexOf(question), 1)
       }
       getQuestions() {
         return this.questions;
@@ -1028,7 +1055,12 @@
       getName() {
         return this.name
       }
-
+      getState() {
+        return {
+          c: this.getName(),
+          qs: this.getQuestions().map(q => q.getState())
+        }
+      }
       hashCode() {
         let hash = 0;
         for (const chr of this.getName()) {
@@ -1040,32 +1072,35 @@
     }
 
     class Team {
-      constructor(name, points=0) {
+      constructor(name, points=0, active = true) {
         this.name = name
-        this._active = true
+        this._active = active
 
         this.pointsManual = points ? [points, ] : []
         this.correct = []
         this.incorrect = []
       }
       addAnsweredQuestion(question, correct) {
-        if (correct)
-          this.correct.push(question)
-        else
-          this.incorrect.push(question)
+        const inc = this.incorrect.indexOf(question)
+        if (inc !== -1) this.incorrect.splice(inc, 1)
+        const corr = this.correct.indexOf(question)
+        if (corr !== -1) this.correct.splice(corr, 1)
+
+        if (correct && inc === -1) this.correct.push(question)
+        else if (!correct && corr === -1) this.incorrect.push(question)
       }
       setPoints(points) {
         if (!Number.isInteger(points)) throw new Error('Type must be integer')
         this.pointsManual.push(points - this.getPoints())
-
       }
       getPoints() {
         const correctPoints = this.correct.map(q => q.getPoints()).reduce((a,b) => a + b, 0);
         const incorrectPoints = this.incorrect.map(q => q.getPoints()).reduce((a,b) => a + b, 0);
         const manualPoints = this.pointsManual.reduce((a,b) => a + b, 0);
-        return correctPoints + incorrectPoints + manualPoints;
+        return correctPoints - incorrectPoints + manualPoints;
       }
       setName(name) {
+        console.log(name)
         this.name = name
       }
       getName() {
@@ -1109,6 +1144,7 @@
       addAnsweredQuestion(question) {
         for (const q of this.answeredQuestions)
           if (q === question) return
+        if (!question.isAsked()) return
         this.answeredQuestions.push(question)
       }
       getQuestion(id) {
@@ -1128,7 +1164,7 @@
         this.teams.push(team)
       }
       removeTeam(team) {
-        this.teams.slice(this.teams.indexOf(team), 1)
+        this.teams.splice(this.teams.indexOf(team), 1)
       }
       getTeams() {
         return this.teams;
@@ -1138,7 +1174,7 @@
         this.categories.push(category)
       }
       removeCategory(category) {
-        this.categories.slice(this.categories.indexOf(category), 1)
+        this.categories.splice(this.categories.indexOf(category), 1)
       }
       getCategories() {
         return this.categories;
@@ -1151,6 +1187,18 @@
           this.addCategory(c)
         }
       }
+      loadState(data) {
+        const {id, teams, inerts, c} = data;
+        this.loadData(c)
+        if (this.hashCode() !== id) throw new Error("State not belong to this game")
+        for (const inert of inerts) {
+          const q = this.getQuestion(inert)
+          q.asked()
+          this.addAnsweredQuestion(q)
+        }
+        for (const team of teams)
+          this.addTeam(new Team(team.name, team.points))
+      }
 
       getName() {
         return this.name;
@@ -1158,9 +1206,11 @@
 
       getState() {
         const state = {}
+        state["id"] = this.hashCode()
         state["name"] = this.getName();
         state["teams"] = this.getTeams().map(t => t.getState());
         state["inerts"] = this.answeredQuestions.map(q => q.hashCode())
+        state["c"] = this.getCategories().map(c => c.getState())
         return state
       }
 
@@ -1216,87 +1266,96 @@
     Question.prototype.addListener(Question.prototype.asked, "asked")
     Question.prototype.addListener(Question.prototype.answered, "answered")
 
-    function createTeamTab(c) {
-      const teamEl = document.createElement("div")
-      const nameEl = document.createElement("h3")
-      const pointsEl = document.createElement("h3")
-      const pointerEl = document.createElement("div")
-      const plusEl = document.createElement("span")
-      const minusEl = document.createElement("span")
-      nameEl.contentEditable = "true"
-      pointsEl.contentEditable = "true"
-      teamEl.className = "team";
-      nameEl.className = "name";
-      pointsEl.className = "points";
-      pointerEl.className = "pointer";
-      plusEl.className = "plus";
-      minusEl.className = "minus";
-      plusEl.innerText = "+"
-      minusEl.innerText = "-"
-      teamEl.appendChild(nameEl)
-      teamEl.appendChild(pointsEl)
-      teamEl.appendChild(pointerEl)
-      pointerEl.appendChild(plusEl)
-      pointerEl.appendChild(minusEl)
+    function createElement(el, className, parentEl, innerText) {
+      const El = document.createElement(el)
+      if (className) El.className = className;
+      if (innerText && el !== "input") El.innerText = innerText;
+      if (innerText && el === "input") El.value = innerText;
+      if (parentEl) parentEl.appendChild(El);
+      return El;
+    }
+
+    function createTeamTab(team) {
+      if (!team.getStatus()) return null
+      const teamEl = createElement("div", "team", teamsEl);
+      const nameEl = createElement("input", "name", teamEl, team.getName());
+      const pointsEl = createElement("input", "points", teamEl, team.getPoints().toString());
+      const pointerEl = createElement("div", "pointer", teamEl);
+      const plusEl = createElement("span", "plus", pointerEl, "+");
+      const minusEl = createElement("span", "minus", pointerEl, "-");
+      plusEl.onclick = () => {
+        const last = getCurrentGame().getLastQuestion()
+        if (last) {
+          team.addAnsweredQuestion(last, true)
+          pointsEl.value = team.getPoints().toString()
+          saveState()
+        }
+      }
+      minusEl.onclick = () => {
+        const last = getCurrentGame().getLastQuestion()
+        if (last) {
+          team.addAnsweredQuestion(last, false)
+          pointsEl.value = team.getPoints().toString()
+          saveState()
+        }
+      }
+      nameEl.onchange = (e) => {
+        team.setName(e.target.value)
+        saveState()
+      }
+
+      pointsEl.onchange = (e) => {
+        try{
+          team.setPoints(parseInt(e.target.value))
+          e.target.value = team.getPoints()
+          saveState()
+        } catch (err) {
+          alert("Input must be integer!")
+          e.target.value = team.getPoints()
+        }
+      }
+      pointsEl.type = 'text'
+      nameEl.type = 'text'
       return teamEl
     }
-
     function createCategoryCell(c) {
-      const catEl = document.createElement("div")
-      const cellEl = document.createElement("div")
-      const innerEl = document.createElement("div")
-      catEl.className = "grid-cell";
-      cellEl.className = "cell";
-      innerEl.className = "cell-inner cat-cell";
-      catEl.appendChild(cellEl)
-      cellEl.appendChild(innerEl)
-      innerEl.innerText = c
+      const catEl = createElement("div", "grid-cell")
+      const cellEl = createElement("div", "cell", catEl)
+      createElement("div", "cell-inner cat-cell", cellEl, c)
       return catEl
     }
-
-    function createQuestionCell(id, q, a, p) {
-      const questionEl = document.createElement("div")
-      const cellEl = document.createElement("div")
-      const innerEl = document.createElement("div")
-      const frontEl = document.createElement("div")
-      const backEl = document.createElement("div")
-      questionEl.className = "cell-group grid-cell"
-      cellEl.className = "cell points"
-      innerEl.className = "cell-inner"
-      frontEl.className = "front question "
-      backEl.className = "back answer"
-      questionEl.appendChild(cellEl)
-      cellEl.appendChild(innerEl)
-      cellEl.appendChild(frontEl)
-      cellEl.appendChild(backEl)
-      innerEl.innerText = p
-      frontEl.innerText = q
-      backEl.innerText = a
+    function createQuestionCell(id, q, a, p, inerts) {
+      const questionEl = createElement("div", "cell-group grid-cell" + (inerts? " inert": ''))
+      const cellEl = createElement("div", "cell points", questionEl)
+      createElement("div", "cell-inner", cellEl, p)
+      createElement("div", "front question", cellEl, q)
+      createElement("div", "back answer", cellEl, a)
       questionEl.id = id
       return questionEl
     }
-
     function createEmptyCell() {
-      const questionEl = document.createElement("div");
-      questionEl.className = "cell-group grid-cell empty";
-      return questionEl;
+      return createElement("div", "cell-group grid-cell empty");
     }
 
     function renderGrid(game) {
+      gridEl.innerHTML = ''
       const categories = game.getCategories();
       const maxQuestions = Math.max(...categories.map(c => c.getQuestions().length));
 
       for (let i = 0; i <= maxQuestions; i++) {
-        const gridRowEl = document.createElement('div');
+        let className;
+        switch (i) {
+          case 0: // Categories
+            className = "grid-row grid-row-cats"; break;
+          case 1: // Questions first line
+            className = "grid-row grid-row-questions grid-first-row"; break;
+          case maxQuestions: // Questions last line
+            className = "grid-row grid-row-questions grid-last-row"; break;
+          default:
+            className = "grid-row grid-row-questions"
+        }
 
-        if (i === 0) { // Categories
-          gridRowEl.className = "grid-row grid-row-cats";
-        } else if (i === 1) { // Questions first line
-          gridRowEl.className = "grid-row grid-row-questions grid-first-row";
-        } else if (i === maxQuestions) { // Questions last line
-          gridRowEl.className = "grid-row grid-row-questions grid-last-row";
-        } else
-          gridRowEl.className = "grid-row grid-row-questions";
+        const gridRowEl = createElement('div', className, gridEl);
 
         for (let j = 0; j < categories.length; j++) {
           let cellEl;
@@ -1306,10 +1365,10 @@
           } else { // Question
             const q = category.getQuestion(i - 1);
             if (q) {
-              cellEl = createQuestionCell(q.hashCode(), q.getQuestion(), q.getAnswer(), q.getPoints());
+              cellEl = createQuestionCell(q.hashCode(), q.getQuestion(), q.getAnswer(), q.getPoints(), q.isAsked());
               cellEl.onclick = () => {
                 getCurrentGame().setLastQuestion(q)
-                modal.show(q)
+                renderState({ "page": "slide", "cell": q.hashCode() })
               }
             } else
               cellEl = createEmptyCell();
@@ -1318,8 +1377,6 @@
           cellEl.setAttribute('data-col', j.toString());
           gridRowEl.appendChild(cellEl)
         }
-
-        gridEl.appendChild(gridRowEl)
       }
     }
 
@@ -1331,7 +1388,7 @@
     function debounce(func, wait, immediate) {
       let timeout;
       if (immediate) return func
-      return () => {clearTimeout(timeout);timeout = setTimeout(func, wait)};
+      return () => {clearTimeout(timeout);timeout=setTimeout(func, wait)};
     }
 
     function on(eventName, elementSelector, handler, extra) {
@@ -1352,93 +1409,102 @@
     }
 
     const game = {
-      game: new Kuldvillak('Kuldvillak'),
-      first_render: true
+      game: null
     }
-
     initial_state = { "page": "menu" }
-    history.replaceState(initial_state, "Game")
+
+    function loadGame(key) {
+      const state = getState(key)
+      let _game;
+      if (state) {
+        const {name} = state
+        _game = new Kuldvillak(name)
+        _game.loadState(state)
+      }
+      else {
+        _game = new Kuldvillak('Kuldvillak')
+        _game.loadData(gameData)
+      }
+
+      setCurrentGame(_game)
+      return _game
+    }
 
     function getCurrentGame() {
       return game.game;
     }
-    // function setCurrentGame(game) {
-    //   game.game = game
-    // }
+    function setCurrentGame(_game) {
+      game.game = _game
+    }
 
     function clearState() {
-      localStorage.removeItem(getCurrentGame().hashCode())
+      const state = getState()
+      if (state) {
+        state["teams"] = []
+        state["inerts"] = []
+        localStorage.setItem(state.id, JSON.stringify(state))
+        newReady()
+      }
     }
-    function getState() {
-      const state = localStorage.getItem(getCurrentGame().hashCode())
+    function getState(key) {
+      const state = localStorage.getItem(key? key : getCurrentGame().hashCode())
       return state ? JSON.parse(state) : null;
     }
+    function saveState() {
+      const _game = getCurrentGame()
+      localStorage.setItem(_game.hashCode(), JSON.stringify(_game.getState()))
+    }
+
+    window.addEventListener("resize", debounce(resize, 40, false));
 
     const newReady = function() {
-      const game = getCurrentGame()
-      const saveState = () => localStorage.setItem(game.hashCode(), JSON.stringify(getCurrentState()))
-      game.loadData(gameData)
-      renderGrid(game)
+
+      const _game = loadGame("g-1592841761")
+
+      renderGrid(_game)
       resize()
-      window.addEventListener("resize", debounce(resize, 40, false));
-      // renderState(initial_state)
-
-      // on minus pluss points save state
-
+      renderState(initial_state)
     }
     ready(newReady)
 
     function renderMenu() {
-      const old_state = getState() || !game.first_render
-      if (!game.first_render) {
-        submitEl.value = "Continue"
-        resetEl.style.display = ""
-      } else if (old_state) {
-        submitEl.value = "Continue"
-        resetEl.style.display = ""
-        // let teams = old_state.teams.length;
-        // if (teams > 5) {
-        //   let opt = document.createElement("option");
-        //   opt.setAttribute("value", teams);
-        //   opt.textContent = teams + " teams"
-        //   // teamChooserEl.insertBefore(opt, document.getElementById("last-option"));
-        // }
-        teamChooserEl.value = old_state.teams.length;
+      const old_state = getState()
+      optionsEl.style.display = "block";
+      if (!old_state.teams.length && !old_state.inerts.length) {
+        submitEl.value = "Start";
+        resetEl.style.display = "none";
+        teamChooserEl.value = 2; // DEFAULT VALUE
       } else {
-        submitEl.value = "Start"
-        resetEl.style.display = "none"
+        submitEl.value = "Continue"
+        resetEl.style.display = ""
+        teamChooserEl.value = old_state.teams.length;
       }
     }
+    function renderState(state) {
+      if (state)
+        history.pushState(state, "Game");
+      else
+        state = window.history.state
 
+      optionsEl.style.display = "none";
+      teamsEl.style.display = "none";
+      gameplayEl.style.filter = "";
 
-    // ready(() => {
-    //
-    //   on("keyup change input blur focus", "#teams .name, #teams .points", debouncedSaveState);
-    //
-    //   on("click", ".grid-row-questions .grid-cell", function() {modal.show(this)})
-    //
-    //   // handle points clicks
-    //   on("click", ".minus, .plus", function(e) {
-    //     const $team = closest(this, ".team");
-    //     const $points = $team.querySelectorAll(".points")[0];
-    //     const points = parseInt($points.innerText);
-    //     if (isNaN(points)) {
-    //       alert("Error! The score for this team is not a number. You need to edit the score and change it to a number.");
-    //       return
-    //     }
-    //     const active_question = document.querySelectorAll(".active-question .cell-inner")[0];
-    //     const fallback = document.querySelectorAll(".grid-row-questions .cell-inner")[0];
-    //     let val = parseInt(active_question ? active_question.innerText : fallback.innerText);
-    //     if (this.classList.contains("minus")) {
-    //       val = -val;
-    //     }
-    //     $points.innerText = points + val;
-    //     if (active_question) {
-    //       document.querySelectorAll(".active-question")[0].classList.add("inert");
-    //     }
-    //     debouncedSaveState();
-    //   });
-    // });
+      modal.is_open = false;
+      modalEl.style.display = "none";
+      modalEl.classList.remove("expanded");
+      modalEl.style.borderWidth = "3px";
+
+      if (state.page === "menu") {
+        renderMenu();
+      } else {
+        teamsEl.style.display = "flex";
+        gameplayEl.style.filter = "blur(0px)";
+        if (state.page === "slide")
+          modal.show(getCurrentGame().getQuestion(state.cell), true);
+      }
+    }
+    window.onpopstate = () => renderState();
 
     const shrink_cell_cache = {};
     let enable_caching = true;
@@ -1562,15 +1628,6 @@
           prepwork(cell, scale_factor)
     }
 
-    function getCurrentState() {
-      return getCurrentGame().getState()
-    }
-
-    function getOldState() {
-      const old_state = localStorage.getItem("game-2161995")
-      return old_state ? JSON.parse(old_state) : null;
-    }
-
     function resize() {
       let bbox_teams = getBoundingClientRect(teamsEl)
       let rows = document.querySelectorAll(".grid-row").length;
@@ -1582,117 +1639,49 @@
       minirender(gridEl, .8);
     }
 
+    game.init = function() {
+      let val = parseInt(teamChooserEl.value)
 
-    game.init = function(clear) {
-      let val = teamChooserEl.value;
+      const _game = getCurrentGame()
+      const teams = _game.getTeams()
 
-      if (isNaN(val)) {
-        val = 0
-        do {
-          const n = prompt("Enter the number of teams you have");
-          val = parseInt(n, 10) || 0;
-        } while (val <= 0);
+      teamsEl.innerHTML = ''
+
+      if (val < teams.length) {
+        for (let i = val - 1; i < val; i++)
+          _game.getTeams()[i].inactive()
+      } else if (val > teams.length) {
+        for (let i = teams.length; i < val; i++)
+          _game.addTeam(new Team("Team " + (i + 1), 0))
       }
-      renderState({ "page": "game" })
-      // add all the teams
-      teamsEl.style.display = "flex";
-      let teams = document.querySelectorAll("#teams .team");
-
-      for (const team of teams) team.style.display = "none";
-
       for (let i = 0; i < val; i++) {
-        var t = teams[i];
-        if (!t) {
-          var t = teams[0].cloneNode(true)
-          teams[0].parentElement.appendChild(t);
-          t.querySelectorAll(".name")[0].textContent = "Team " + (i + 1)
-          t.querySelectorAll(".points")[0].textContent = "0"
-        } else {
-          t = teams[i]
-        }
-        t.style.display = "block";
+        const team = _game.getTeams()[i]
+        team.active()
+        createTeamTab(team)
       }
-
-      teams = document.querySelectorAll("#teams .team");
-      if (game.first_render) {
-        const old_state = getOldState();
-        if (old_state) {
-          for (let i = 0; i < val; i++) {
-            const t = teams[i];
-            if (old_state.teams[i]) {
-              const name = old_state.teams[i].name;
-              const points = old_state.teams[i].points;
-              t.querySelectorAll(".name")[0].textContent = name
-              t.querySelectorAll(".points")[0].textContent = points
-            }
-          }
-
-          // restore the inert questions
-          const inerts = old_state.inerts;
-          for (const id in inerts)
-            document.getElementById(id).classList.add("inert");
-
-        }
-      } else if (clear) {
-        for (let i = 0; i < val; i++) {
-          const t = teams[i];
-          t.querySelectorAll(".name")[0].textContent = "Team " + (i + 1)
-          t.querySelectorAll(".points")[0].textContent = "0"
-        }
-        removeClass(".inert", "inert");
-      } else {
-
-      } // coming just restore
-
+      saveState()
+      renderState({ "page": "game" })
       resize()
-      history.pushState({ "page": "game" }, "Game");
-      game.first_render = false;
     }
-
-    function renderState(state) {
-      optionsEl.style.display = "none";
-      teamsEl.style.display = "none";
-      gameplayEl.style.filter = "";
-
-      modal.is_open = false;
-      modalEl.style.display = "none";
-      modalEl.classList.remove("expanded");
-      modalEl.style.borderWidth = "3px";
-
-      if (state.page === "menu") {
-        optionsEl.style.display = "block";
-        renderMenu();
-      } else {
-        teamsEl.style.display = "";
-        gameplayEl.style.filter = "blur(0px)";
-        if (state.page === "slide")
-          modal.show(getCurrentGame().getQuestion(state.cell), true);
-      }
-    }
-
-    window.onpopstate = () => renderState(window.history.state);
 
     let modal = function() {}
-
     modal.hide = function () {
       modalAnswerEl.classList.remove("reveal");
       renderState({ "page": "game" });
     }
-
     modal.reveal = function() {
       modalAnswerEl.classList.add("reveal");
-      const question = getCurrentGame().getLastQuestion()
+      const _game = getCurrentGame()
+      const question = _game.getLastQuestion()
       question.asked()
+      _game.addAnsweredQuestion(question)
       document.getElementById(question.hashCode()).classList.add("inert");
+      saveState()
     }
-
-    modal.show = function(question, no_push_state) {
+    modal.show = function(question) {
       modalTitleEl.innerText = question.getCategory().getName() + " " + question.getPoints()
 
-      const id = question.hashCode()
-      if (!no_push_state)
-        history.pushState({ "page": "slide", "cell": id }, "Game");
-      const questionEl = document.getElementById(id)
+      const questionEl = document.getElementById(question.hashCode())
       let bbox = questionEl.getBoundingClientRect();
 
       modalEl.style.display = "block";
@@ -1727,20 +1716,13 @@
       modal.is_open = true; // flag for the keyboard event
     }
 
-    function backToMenu() {
-      renderState({ "page": "menu" });
-    }
-
     on("click", "#answer-button", () => modal.reveal());
     on("click", "#continue-button", () => modal.hide());
-    on("click", "#menu-picker", () => backToMenu());
+    on("click", "#menu-picker", () => renderState({ "page": "menu" }));
     on("click", "#submit", () => game.init());
     on("click", "#reset-all", (e) => {
-      e.preventDefault();
-      if (confirm("This will clear the scores and team names, and start a new game. Click OK if you want to do this")) {
+      if (confirm("This will clear the scores and team names, and start a new game. Click OK if you want to do this"))
         clearState();
-        game.init(true);
-      }
     });
 
     window.addEventListener("keydown", (e) => {
