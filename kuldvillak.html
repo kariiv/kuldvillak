@@ -1470,7 +1470,7 @@
     function renderMenu() {
       const old_state = getState()
       optionsEl.style.display = "block";
-      if (!old_state.teams.length && !old_state.inerts.length) {
+      if (!old_state || (!old_state.teams.length && !old_state.inerts.length)) {
         submitEl.value = "Start";
         resetEl.style.display = "none";
         teamChooserEl.value = 2; // DEFAULT VALUE
