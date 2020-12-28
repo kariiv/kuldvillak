@@ -5,6 +5,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Kuldvillak</title>
   <meta name="description" content="Kuldvillak? Kas sina juba teadsid?" />
+  <script type="text/javascript">
+    const gameData = [
+              {
+                c: "Inimesed",
+                qs: [
+                  { p:100,q:"Kes on Eesti peaminister?",a:"Kes on Andrus Ansip"},
+                  { p:200,q:"Kes mängis \"üksinda kodus\" Kevinit?",a:"Kes on Macauly Culkin"},
+                  { p:300,q:"Üks maailma kulsaim paar, kes mängisid koos filmis?",a:"Kes on Brad Pitt ja Angelina Jolie"},
+                  { p:400,q:"kes on Kanadast pärit kuulsaim popstaar?",a:"Kes on Justin Bieber"},
+                  { p:500,q:"Mis saatest sai kuulsaks perekond Kardashian?",a:"Mis on \"keeping up with Kardashians\""},
+                ]
+              },{
+                c: "Eesti",
+                qs: [
+                  { p:100,q:"Kas Eesti on eurovisioonil võitnud?",a:"Mis on Jah"},
+                  { p:200,q:"Kes võitis \"Su nägu kõlab tuttavalt\" esimese hooaja?",a:"Kes on Evelin Võigemast"},
+                  { p:300,q:"Kes võitis saate \"Su nägu kõlab tuttavalt\" teise hooaja?",a:"Kes on Koit Toome"},
+                  { p:400,q:"Mitmes on Eesti maailmas nahavähi arvukuse poolest?",a:"Mis on esimene"},
+                  { p:500,q:"Kes kuulutas Tallinna üheks ilusaimaks linnaks jõulude ajal?",a:"Kes on BBC"},
+                ]
+              },{
+                c: "Maailm",
+                qs: [
+                  { p:100,q:"Mitu inimest on maakeral kokku?",a:"Mis on 7 miljardit"},
+                  { p:200,q:"Briti kuulsaim poistebänd?",a:"Kes on One Directon"},
+                  { p:300,q:"Mis riigi kuninganna on Elisabeth II?",a:"Mis on Inglismaa"},
+                  { p:400,q:"Lõuna-Prantsusmaal asuv \"kuulsate ja rikaste kuurort\"?",a:"Mis on Saint Tropez"},
+                  { p:500,q:"Mis riik on saapa kujuline?",a:"Mis on Itaalia"},
+                ]
+              },{
+                c: "Planeedid",
+                qs: [
+                  { p:100,q:"Mitmes planeet on päikesest Maa?",a:"Mis on kolmas"},
+                  { p:200,q:"Mis on päikesesüsteemis esimene planeet päikesest?",a:"Mis on Merkuur"},
+                  { p:300,q:"Mis planeedist on inspireeritud Marsimehe vitamiinid?",a:"Mis on Marss"},
+                  { p:400,q:"Mis oli selle planeedi nimi, mis eemaldati päikesesüsteemist?",a:"Mis on Pluuto"},
+                  { p:500,q:"Miks on Merkuuril võimatu elada?",a:"Mis on, sest seal on liiga kuum"},
+                ]
+              },{
+                c: "Varia",
+                qs: [
+                  { p:100,q:"Millal tuuakse jõuludel tuppa kuusepuu?",a:"Mis on 23. detsember"},
+                  { p:200,q:"Kes on kirjutanud raamatu \"Leiutajateküla Lotte\"?",a:"Kes on Andrus Kivirähk"},
+                  { p:300,q:"Mis on Austraalia pealinn?",a:"Mis on Canberra"},
+                  { p:400,q:"Millest on tulnud jõuluvana välimus?",a:"Mis on Coca Cola reklaamist"},
+                  { p:500,q:"Mitu kilomeetrit on Tallinnast Helsingisse?",a:"Mis on 76 km"},
+                ]
+              }
+            ]
+  </script>
   <style type="text/css">
     *,
     *::before,
@@ -228,15 +278,6 @@
       margin-bottom: .5rem;
     }
 
-    button {
-      border-radius: 0;
-    }
-
-    button:focus {
-      outline: 1px dotted;
-      outline: 5px auto -webkit-focus-ring-color;
-    }
-
     input,
     button,
     select,
@@ -248,13 +289,11 @@
       line-height: inherit;
     }
 
-    button,
-    input {
+    button, input {
       overflow: visible;
     }
 
-    button,
-    select {
+    button, select {
       text-transform: none;
     }
 
@@ -497,7 +536,7 @@
       text-decoration: none;
     }
 
-    #re-init {
+    #reset-all {
       background: transparent;
       color: white;
       margin-left: 10px;
@@ -579,8 +618,7 @@
       border: 3px solid #ffff00;
       z-index: 10;
     }
-    #question-modal .question {
-      display: none;
+    #question-modal .answer {
       opacity: 0;
       border-top: 3px dotted white;
       margin-top: 10px;
@@ -745,7 +783,7 @@
     .cell a:link,
     .cell a:visited,
     .cell a:hover {
-      color: white;
+      color: #ffffff;
     }
 
     .cell.back {
@@ -763,7 +801,7 @@
     }
 
     .cell-group:hover {
-      border-color: yellow;
+      border-color: #ffff00;
     }
 
     .cell-group:hover .front {
@@ -816,994 +854,10 @@
       background: none;
     }
   </style>
-  <script type="text/javascript">
-
-// function b64EncodeUnicode(str) {
-//   return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
-//           (match, p1) => String.fromCharCode('0x' + p1)))
-// }
-// function b64DecodeUnicode(str) {
-//   return decodeURIComponent(atob(str).split('')
-//           .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-// }
-
-const gameData = [
-  {
-    c: "Inimesed",
-    qs: [
-      { p:100,q:"Kes on Eesti peaminister?",a:"Kes on Andrus Ansip"},
-      { p:200,q:"Kes mängis \"üksinda kodus\" Kevinit?",a:"Kes on Macauly Culkin"},
-      { p:300,q:"Üks maailma kulsaim paar, kes mängisid koos filmis?",a:"Kes on Brad Pitt ja Angelina Jolie"},
-      { p:400,q:"kes on Kanadast pärit kuulsaim popstaar?",a:"Kes on Justin Bieber"},
-      { p:500,q:"Mis saatest sai kuulsaks perekond Kardashian?",a:"Mis on \"keeping up with Kardashians\""},
-    ]
-  },{
-    c: "Eesti",
-    qs: [
-      { p:100,q:"Kas Eesti on eurovisioonil võitnud?",a:"Mis on Jah"},
-      { p:200,q:"Kes võitis \"Su nägu kõlab tuttavalt\" esimese hooaja?",a:"Kes on Evelin Võigemast"},
-      { p:300,q:"Kes võitis saate \"Su nägu kõlab tuttavalt\" teise hooaja?",a:"Kes on Koit Toome"},
-      { p:400,q:"Mitmes on Eesti maailmas nahavähi arvukuse poolest?",a:"Mis on esimene"},
-      { p:500,q:"Kes kuulutas Tallinna üheks ilusaimaks linnaks jõulude ajal?",a:"Kes on BBC"},
-    ]
-  },{
-    c: "Maailm",
-    qs: [
-      { p:100,q:"Mitu inimest on maakeral kokku?",a:"Mis on 7 miljardit"},
-      { p:200,q:"Briti kuulsaim poistebänd?",a:"Kes on One Directon"},
-      { p:300,q:"Mis riigi kuninganna on Elisabeth II?",a:"Mis on Inglismaa"},
-      { p:400,q:"Lõuna-Prantsusmaal asuv \"kuulsate ja rikaste kuurort\"?",a:"Mis on Saint Tropez"},
-      { p:500,q:"Mis riik on saapa kujuline?",a:"Mis on Itaalia"},
-    ]
-  },{
-    c: "Planeedid",
-    qs: [
-      { p:100,q:"Mitmes planeet on päikesest Maa?",a:"Mis on kolmas"},
-      { p:200,q:"Mis on päikesesüsteemis esimene planeet päikesest?",a:"Mis on Merkuur"},
-      { p:300,q:"Mis planeedist on inspireeritud Marsimehe vitamiinid?",a:"Mis on Marss"},
-      { p:400,q:"Mis oli selle planeedi nimi, mis eemaldati päikesesüsteemist?",a:"Mis on Pluuto"},
-      { p:500,q:"Miks on Merkuuril võimatu elada?",a:"Mis on, sest seal on liiga kuum"},
-    ]
-  },{
-    c: "Varia",
-    qs: [
-      { p:100,q:"Millal tuuakse jõuludel tuppa kuusepuu?",a:"Mis on 23. detsember"},
-      { p:200,q:"Kes on kirjutanud raamatu \"Leiutajateküla Lotte\"?",a:"Kes on Andrus Kivirähk"},
-      { p:300,q:"Mis on Austraalia pealinn?",a:"Mis on Canberra"},
-      { p:400,q:"Millest on tulnud jõuluvana välimus?",a:"Mis on Coca Cola reklaamist"},
-      { p:500,q:"Mitu kilomeetrit on Tallinnast Helsingisse?",a:"Mis on 76 km"},
-    ]
-  }
-]
-
-const text = JSON.stringify(gameData)
-const en = compress(text)
-console.log(en)
-// const de = b64DecodeUnicode(en)
-// console.log(de)
-// console.log(de === text)
-console.log(text)
-console.log(text.length)
-console.log(en.length)
-
-const teams = document.getElementById("teams")
-const teams = document.getElementById("question-modal")
-
-class Question {
-  constructor(question, answer, points) {
-    this.question = question
-    this.answer = answer
-    this.points = points
-  }
-  getQuestion() {
-    return this.question;
-  }
-  getAnswer() {
-    return this.answer;
-  }
-  getPoints() {
-    return this.points;
-  }
-}
-
-class Category {
-
-  constructor(name) {
-    this.name = name;
-    this.questions = [];
-    this.asked = false
-    this.answeredBy = null;
-  }
-
-  addQuestion(question) {
-    this.questions.push(question)
-  }
-  removeQuestion(question) {
-    // this.questions.indexOf(question)
-  }
-  getQuestions() {
-    return this.questions;
-  }
-
-  createQuestion(question, answer, points) {
-    this.questions.push(new Question(question, answer, points))
-    return this;
-  }
-}
-
-class Team {
-
-  constructor(name, points=0) {
-    this.name = name
-    this._active = true
-    
-    this.pointsManual = []
-    this.answered = []
-  }
-
-  setPoints(points) {
-    if (!Number.isInteger(points)) throw new Error('Type must be intiger')
-    this.points = points
-  }
-  getPoints() {
-    return this.points
-  }
-  setName(name) {
-    this.name = name
-  }
-  getName() {
-    return this.name
-  }
-  active() {
-    this._active = true
-  }
-  inactive() {
-    this._active = false
-  }
-}
-
-class Kuldvillak {
-
-  constructor(props) {
-    this.teams = []
-    this.categories = []
-  }
-
-  addTeam(team) {
-    this.teams.push(team)
-  }
-  removeTeam(team) {
-    
-  }
-  
-  addCategory(category) {
-    this.categories.push(category)
-  }
-  removeCategory(category) {
-    
-  }
-  
-}
-
-
-
-function removeClass(selector, cls) {
-  for (const el of document.querySelectorAll(selector))
-    el.classList.remove(cls);
-}
-
-function debounce(func, wait, immediate) {
-  let timeout;
-  if (immediate) return func
-  return () => {
-    clearTimeout(timeout);
-    timeout = setTimeout(func, wait);
-  };
-}
-
-  function ready(fn) {
-    if (document.readyState !== 'loading' && document.body) fn();
-    else document.addEventListener('DOMContentLoaded', fn);
-  }
-
-  if (!Math.log2) Math.log2 = (x) => Math.log(x) * Math.LOG2E
-
-  const shrink_cell_cache = {};
-  let enable_caching = true;
-
-  function shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms) {
-    let cached;
-    let cache_key;
-    if (enable_caching) {
-      cache_key = [max_width, max_height, $cell.innerHTML].join(".");
-      cached = shrink_cell_cache[cache_key];
-    } else
-      return _shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms);
-
-    if (cached) {
-      $scaler.style.fontSize = cached.font_size + "px";
-      $scaler.style.transform = (transforms || "") + " scale(" + cached.scale + ") ";
-    } else
-      shrink_cell_cache[cache_key] = _shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms);
-  }
-
-  function shrink_in_place($cell, max_font_size, min_font_size) {
-    const div = $cell;
-
-    const a = { length: max_font_size + 1 }
-    let font_size = binarySearch(a, function(el, array, font_size) {
-      div.style.fontSize = font_size + "px";
-      const isHorizontalScrollbar = div.scrollWidth > div.clientWidth;
-      const isVerticalScrollbar = div.scrollHeight > div.clientHeight;
-      return isHorizontalScrollbar || isVerticalScrollbar
-    });
-    font_size = font_size - 1
-    font_size = Math.max(min_font_size, Math.min(font_size, max_font_size));
-    div.style.fontSize = font_size + "px";
-    return font_size;
-  }
-
-  function binarySearch(array, pred) {
-    let lo = -1, hi = array.length;
-    while (1 + lo < hi) {
-      const mi = lo + ((hi - lo) >> 1);
-      if (pred(array[mi], array, mi)) hi = mi;
-      else lo = mi;
-    }
-    return hi;
-  }
-
-  function _shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms, min_font_size) {
-    if (min_font_size === undefined)
-      min_font_size = 1;
-
-    let font_size = Math.max(min_font_size, max_font_size);
-
-    if (!$scaler) return { font_size: font_size }
-
-    $cell.style.fontSize = "";
-    $scaler.style.fontSize = font_size + "px";
-    $scaler.style.transform = "";
-
-    const extra_width = 0
-    const extra_height = 0
-
-    const bbox = getBoundingClientRect($scaler);
-    const w = bbox.width;
-    const h = bbox.height;
-    const scale = Math.min(1, Math.min((max_width - extra_width) / w, (max_height - extra_height) / h));
-    if (scale !== 1) {
-      //debugger;
-    }
-    $scaler.style.transform = (transforms || "") + " scale(" + scale + ") ";
-
-    return { font_size: font_size, scale: scale };
-  }
-
-  function getBoundingClientRect(el) {
-    const bbox = el.getBoundingClientRect();
-
-    return {
-      top: bbox.top + (window.scrollY || document.documentElement.scrollTop || 0),
-      left: bbox.left + (window.scrollX || document.documentElement.scrollLeft || 0),
-      width: bbox.width,
-      height: bbox.height,
-      x: bbox.x,
-      y: bbox.y
-    }
-  }
-
-  function matches(el, selector) {
-    return (el.matches || el.matchesSelector || el.msMatchesSelector || el.mozMatchesSelector || el.webkitMatchesSelector || el.oMatchesSelector).call(el, selector);
-  }
-
-  function on(eventName, elementSelector, handler, extra) {
-    const names = eventName.split(" ");
-    for (let i = 0; i < names.length; i++) {
-      const eventName = names[i];
-      document.addEventListener(eventName, function(e) {
-        // loop parent nodes from the target to the delegation node
-        for (let target = e.target; target && target !== this; target = target.parentNode) {
-          if (matches(target, elementSelector)) {
-            handler.call(target, e);
-            break;
-          }
-        }
-      }, extra || false);
-    }
-  }
-
-  function closest(element, selector) {
-    do {
-      if (matches(element, selector)) return element;
-    } while (element = element.parentElement);
-    return null;
-  }
-
-  function prepwork(cell, scale_factor) {
-    if (scale_factor === undefined) scale_factor = 1;
-
-    const width = cell.parentElement.clientWidth;
-    const height = cell.parentElement.clientHeight;
-    const inner = cell.querySelectorAll(".cell-inner")[0];
-
-    shrink_cell(cell, inner, width * scale_factor, height * scale_factor, 32, "");
-    return inner
-  }
-
-  function minirender(grid, question_scale_factor) {
-    if (question_scale_factor === undefined)
-      question_scale_factor = 1;
-
-    miniresize(grid, grid.querySelectorAll(".grid-row-cats .cell"), true, 1);
-    miniresize(grid, grid.querySelectorAll(".grid-row-questions .cell"), false, question_scale_factor);
-  }
-
-  function miniresize(grid, cells, is_cats, scale_factor) {
-    if (is_cats) {
-      const cat = grid.querySelectorAll(".grid-row-cats")[0]
-      cat.style.height = "auto";
-      let max_height = 0;
-      for (const cell of cells) {
-        const inner = prepwork(cell);
-        cell.client_height = inner.clientHeight;
-        max_height = Math.max(max_height, inner.clientHeight);
-      }
-      cat.style.height = max_height + "px";
-    } else
-      for (const cell of cells)
-        prepwork(cell, scale_factor)
-  }
-
-  let modal = function() {}
-
-  let game = {}
-  let mode = "play"
-  let grid = null;
-
-  function getCurrentState() {
-    const teams = [];
-    const teams_dom = document.querySelectorAll(".team");
-    for (let i = 0; i < teams_dom.length; i++) {
-      const t = teams_dom[i];
-      const name = t.querySelectorAll(".name")[0].textContent;
-      const points = t.querySelectorAll(".points")[0].textContent;
-      teams[i] = { name: name, points: points }
-    }
-
-    const inerts = {};
-    const inert_dom = document.querySelectorAll(".grid-row-questions .inert");
-    for (let i = 0; i < inert_dom.length; i++) {
-      const id = inert_dom[i].getAttribute("id");
-      inerts[id] = true;
-    }
-
-    return {
-      "teams": teams,
-      "inerts": inerts,
-    }
-  }
-
-  function getOldState() {
-    const old_state = localStorage.getItem("game-2161995")
-    return old_state ? JSON.parse(old_state) : null;
-  }
-
-  function clearState() {
-    localStorage.removeItem("game-2161995");
-  }
-
-  function resize() {
-    let bbox_teams = getBoundingClientRect(document.getElementById("teams"))
-    let rows = document.querySelectorAll(".grid-row").length;
-    let h;
-    if (bbox_teams.height === 0) h = window.innerHeight;
-    else h = bbox_teams.top + ((window.innerHeight - bbox_teams.height) / (rows)) / 4
-
-    grid.style.height = h + "px";
-    minirender(grid, .8);
-  }
-
-  ready(function() {
-    grid = document.querySelectorAll(".grid")[0];
-    window.addEventListener("resize", debounce(resize, 10, false));
-    window.addEventListener("resize", resize);
-    resize();
-    renderState(initial_state);
-
-    window.addEventListener("keydown", (e) => {
-      const ESC = 27
-      const SPACE = 32
-      if (modal.is_open) {
-        if (e.keyCode === ESC) {
-          e.preventDefault();
-          modal.hide();
-        } else if (e.keyCode === SPACE) {
-          e.preventDefault();
-          modal.reveal();
-        }
-      }
-    }, false);
-
-    const debouncedSaveState = debounce(() =>
-      localStorage.setItem("game-2161995", JSON.stringify(getCurrentState())), 100, false)
-
-    on("keyup change input blur focus", "#teams .name, #teams .points", debouncedSaveState);
-
-    on("click", "#re-init", (e) => {
-      e.preventDefault();
-      if (confirm("This will clear the scores and team names, and start a new game. Click OK if you want to do this")) {
-        clearState();
-        game.init(true);
-      }
-    })
-
-    on("click", "#answer-button", () => modal.reveal())
-    on("click", "#continue-button", () => modal.hide())
-    on("click", ".grid-row-questions .grid-cell", function() {modal.show(this)})
-
-    // handle points clicks
-    on("click", ".minus, .plus", function(e) {
-      const $team = closest(this, ".team");
-      const $points = $team.querySelectorAll(".points")[0];
-      const points = parseInt($points.innerText);
-      if (isNaN(points)) {
-        alert("Error! The score for this team is not a number. You need to edit the score and change it to a number.");
-        return
-      }
-      const active_question = document.querySelectorAll(".active-question .cell-inner")[0];
-      const fallback = document.querySelectorAll(".grid-row-questions .cell-inner")[0];
-      let val = parseInt(active_question ? active_question.innerText : fallback.innerText);
-      if (this.classList.contains("minus")) {
-        val = -val;
-      }
-      $points.innerText = points + val;
-      if (active_question) {
-        document.querySelectorAll(".active-question")[0].classList.add("inert");
-      }
-      debouncedSaveState();
-    });
-  });
-
-  initial_state = { "page": "menu" }
-  history.replaceState(initial_state, "Game")
-  game.first_render = true;
-
-  game.init = function(clear) {
-    let val = document.querySelectorAll("#options select")[0].value;
-
-    if (isNaN(val)) {
-      val = 0
-      do {
-        const n = prompt("Enter the number of teams you have");
-        val = parseInt(n, 10) || 0;
-      } while (val <= 0);
-    }
-
-    renderState({ "page": "game" })
-    // add all the teams
-    document.getElementById("teams").style.display = "flex";
-    let teams = document.querySelectorAll("#teams .team");
-
-    for (const team of teams) team.style.display = "none";
-
-    for (let i = 0; i < val; i++) {
-      var t = teams[i];
-      if (!t) {
-        var t = teams[0].cloneNode(true)
-        teams[0].parentElement.appendChild(t);
-        t.querySelectorAll(".name")[0].textContent = "Team " + (i + 1)
-        t.querySelectorAll(".points")[0].textContent = "0"
-      } else {
-        t = teams[i]
-      }
-      t.style.display = "block";
-    }
-
-    teams = document.querySelectorAll("#teams .team");
-    if (game.first_render) {
-      const old_state = getOldState();
-      if (old_state) {
-        for (let i = 0; i < val; i++) {
-          const t = teams[i];
-          if (old_state.teams[i]) {
-            const name = old_state.teams[i].name;
-            const points = old_state.teams[i].points;
-            t.querySelectorAll(".name")[0].textContent = name
-            t.querySelectorAll(".points")[0].textContent = points
-          }
-        }
-
-        // restore the inert questions
-        const inerts = old_state.inerts;
-        for (const id in inerts) {
-          try {
-            document.getElementById(id).classList.add("inert");
-          } catch (e) {}
-        }
-      }
-    } else if (clear) {
-      for (let i = 0; i < val; i++) {
-        const t = teams[i];
-        t.querySelectorAll(".name")[0].textContent = "Team " + (i + 1)
-        t.querySelectorAll(".points")[0].textContent = "0"
-      }
-      removeClass(".inert", "inert");
-    } else {} // coming just restore
-
-    resize()
-    history.pushState({ "page": "game" }, "Game");
-    game.first_render = false;
-  }
-
-  function hideModal() {
-    modal.is_open = false;
-    const div = document.getElementById("question-modal");
-    div.style.display = "none";
-    div.classList.remove("expanded");
-    div.style.borderWidth = "3px";
-    div.querySelectorAll(".modal-inner")[0].innerHTML = "";
-  }
-
-  function renderMenu() {
-    const old_state = getOldState() || !game.first_render
-    if (!game.first_render) {
-      document.getElementById("submit").value = "Continue"
-      document.getElementById("reset-all").style.display = ""
-    } else if (old_state) {
-      document.getElementById("submit").value = "Continue"
-      document.getElementById("reset-all").style.display = ""
-      let teams = old_state.teams.length;
-      let chooser = document.getElementById("team-chooser")
-      if (teams > 10) {
-        let opt = document.createElement("option");
-        opt.setAttribute("value", teams);
-        opt.textContent = teams + " teams"
-        chooser.insertBefore(opt, document.getElementById("last-option"));
-      }
-      document.getElementById("team-chooser").value = teams;
-    } else {
-      document.getElementById("submit").value = "Start"
-      document.getElementById("reset-all").style.display = "none"
-    }
-  }
-
-  function renderState(state) {
-    document.getElementById("options").style.display = "none";
-    document.getElementById("teams").style.display = "none";
-    document.getElementById("gameplay").style.filter = "";
-    hideModal();
-
-    if (state.page === "menu") {
-      document.getElementById("options").style.display = "block";
-      renderMenu();
-    } else {
-      document.getElementById("teams").style.display = "";
-      document.getElementById("gameplay").style.filter = "blur(0px)";
-      if (state.page === "slide")
-        modal.show(document.getElementById(state.cell), true);
-    }
-  }
-
-  window.onpopstate = () => renderState(window.history.state);
-
-  function trimHTML(el) {
-    let treeWalker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, null, false);
-    while (treeWalker.nextNode()) {
-      let node = treeWalker.currentNode;
-    }
-    let nodes_to_delete = [];
-    do {
-      let node = treeWalker.currentNode;
-      if (node.nodeType === 3 && (node.data || "").trim() === "") {
-        nodes_to_delete.push(node);
-      } else if (node.tagName === "SCRIPT") {
-
-      } else if (node.tagName === "BR") {
-        nodes_to_delete.push(node);
-      } else if (node.tagName === "P" && (node.innerText || "").trim() === "") {
-        nodes_to_delete.push(node);
-      } else {
-        break;
-      }
-    } while (treeWalker.previousNode())
-
-    for (const del_node of nodes_to_delete)
-      del_node.parentElement.removeChild(del_node);
-  }
-
-  modal.reveal = function() {
-    let q = document.querySelectorAll("#question-modal .question")[0];
-    q.style.display = "block";
-
-    function scrollTo(element, to, duration) {
-      let start = element.scrollTop,
-        change = to - start,
-        currentTime = 0,
-        increment = 20;
-
-      let animateScroll = function() {
-        currentTime += increment;
-        element.scrollTop = easeInOutQuad(currentTime, start, change, duration);
-        if (currentTime < duration)
-          setTimeout(animateScroll, increment);
-      };
-      animateScroll();
-    }
-
-    //t = current time
-    //b = start value
-    //c = change in value
-    //d = duration
-    function easeInOutQuad(t, b, c, d) {
-      t /= d / 2;
-      if (t < 1) return c / 2 * t * t + b;
-      t--;
-      return -c / 2 * (t * (t - 2) - 1) + b;
-    }
-
-    let modal_inner = document.querySelectorAll('#question-modal .modal-inner')[0]
-    let start_of_modal = getBoundingClientRect(modal_inner).top;
-    let start_of_question = getBoundingClientRect(q).top;
-    let val = start_of_question - start_of_modal;
-    scrollTo(modal_inner, val, 250)
-
-    setTimeout(() => q.classList.add("reveal"), 0)
-
-    document.querySelectorAll(".active-question")[0].classList.add("inert");
-  }
-
-  modal.show = function(cell, no_push_state) {
-    removeClass(".active-question", "active-question");
-    cell.classList.add("active-question");
-
-    let col = cell.getAttribute("data-col");
-    let category = document.querySelectorAll(".grid-row-cats .cat-cell")[col].innerText;
-    let points = cell.querySelectorAll(".cell-inner")[0].innerText;
-    document.querySelectorAll("#question-title")[0].innerText = category + " " + points
-
-    let bbox = cell.getBoundingClientRect();
-    let div_modal = document.getElementById('question-modal')
-    div_modal.style.display = "block";
-    div_modal.style.opacity = "0";
-
-    let inner = document.querySelectorAll("#question-modal .modal-inner")[0];
-    inner.innerHTML = cell.querySelectorAll(".answer")[0].outerHTML + "\n" + cell.querySelectorAll(".question")[0].outerHTML;
-
-    if (!no_push_state) {
-      history.pushState({ "page": "slide", "cell": cell.getAttribute("id") }, "Game");
-    }
-
-    setTimeout(function() {
-      let q = document.querySelectorAll('#question-modal .answer')[0];
-      try {
-        q.querySelectorAll("video, audio").get(0).play();
-      } catch (e) {}
-
-      try {
-        const iframe = q.querySelectorAll("iframe")[0]
-        const src = iframe.getAttribute("src") || "";
-        const a = document.createElement("a");
-        a.href = src
-        if (a.hostname === "www.youtube.com") {
-          a.search = (a.search || "?") + '&autoplay=1'
-          iframe.contentWindow.location.replace(a.toString());
-          //iframe.setAttribute('src', a.toString());
-        }
-      } catch (e) {}
-    }, 500);
-
-    document.querySelectorAll('#question-modal .modal-body .modal-inner')[0].scrollTop = 0;
-
-    trimHTML(document.querySelectorAll('#question-modal .answer')[0]);
-    trimHTML(document.querySelectorAll('#question-modal .question')[0]);
-
-    // the height of the contents of the modal should be...
-    /* [MODAL HEADER]
-     *     ^
-     *     |
-     *     |    <--- this tall
-     *     v
-     * [TEAMS BAR]
-     */
-    let content_bbox = getBoundingClientRect(document.querySelectorAll('#question-modal .modal-body')[0])
-    let position_of_top = content_bbox.top;
-    let teams = document.querySelectorAll("#teams")[0]
-    let position_of_bottom = getBoundingClientRect(teams).top || window.innerHeight;
-    let h = position_of_bottom - position_of_top - 20 // 20 pixels for some extra room
-
-    document.querySelectorAll('#question-modal .modal-inner')[0].style.maxHeight = h + "px";
-    document.querySelectorAll('#question-modal .modal-body')[0].style.height = h + "px";
-
-
-    let q = document.querySelectorAll("#question-modal .question")[0];
-    q.style.display = "block";
-    let content = document.querySelectorAll('#question-modal .modal-inner')[0];
-    shrink_in_place(content, 100, 24);
-    q.style.display = "none";
-
-
-    div_modal.style.transform = "translate(" + bbox.left + "px, " + bbox.top + "px) scale(" + (bbox.width / window.innerWidth) + ", " + (bbox.height / window.innerHeight) + ")"
-    div_modal.style.opacity = "1";
-
-    removeClass(".expanded", "expanded");
-
-    setTimeout(() => {
-      div_modal.classList.add("expanded");
-      div_modal.style.top = "0";
-      div_modal.style.left = "0";
-      div_modal.style.bottom = "0";
-      div_modal.style.right = "0";
-      div_modal.style.width = "100%";
-      div_modal.style.height = "100%";
-      div_modal.style.borderWidth = "0";
-      div_modal.style.transform = "translate(0px, 0px) scale(1)"
-    }, 50);
-    modal.is_open = true; // flag for the keyboard event
-  }
-
-  modal.hide = () => {
-    renderState({ "page": "game" });
-  }
-
-  function backToMenu() {
-    renderState({ "page": "menu" });
-  }
-  </script>
 </head>
-
 <body>
   <div id="gameplay">
     <div class="grid grid-play">
-      <div class="grid-row grid-row-cats">
-        <div class="grid-cell" data-row="0" data-col="0">
-          <div class="cell">
-            <div class="cell-inner cat-cell">Inimesed</div>
-          </div>
-        </div>
-        <div class="grid-cell" data-row="0" data-col="1">
-          <div class="cell">
-            <div class="cell-inner cat-cell">Eesti</div>
-          </div>
-        </div>
-        <div class="grid-cell" data-row="0" data-col="2">
-          <div class="cell">
-            <div class="cell-inner cat-cell">Maailm</div>
-          </div>
-        </div>
-        <div class="grid-cell" data-row="0" data-col="3">
-          <div class="cell">
-            <div class="cell-inner cat-cell">Planeedid</div>
-          </div>
-        </div>
-        <div class="grid-cell" data-row="0" data-col="4">
-          <div class="cell">
-            <div class="cell-inner cat-cell">Varia</div>
-          </div>
-        </div>
-      </div>
-      <div class="grid-row grid-row-questions  grid-first-row">
-        <div class="cell-group grid-cell" id="cell-33183543" data-row="1" data-col="0">
-          <div class="cell points">
-            <div class="cell-inner">100</div>
-            <div class="front answer">Kes on Eesti peaminister?</div>
-            <div class="back question">Kes on Andrus Ansip</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-33183548" data-row="1" data-col="1">
-          <div class="cell points">
-            <div class="cell-inner">100</div>
-            <div class="front answer">Kas Eesti on eurovisioonil võitnud?</div>
-            <div class="back question">Mis on Jah</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-33183553" data-row="1" data-col="2">
-          <div class="cell points">
-            <div class="cell-inner">100</div>
-            <div class="front answer">Mitu inimest on maakeral kokku?</div>
-            <div class="back question">Mis on 7 miljardit</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-33183558" data-row="1" data-col="3">
-          <div class="cell points">
-            <div class="cell-inner">100</div>
-            <div class="front answer">Mitmes planeet on päikesest Maa?</div>
-            <div class="back question">Mis on kolmas</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-33183563" data-row="1" data-col="4">
-          <div class="cell points">
-            <div class="cell-inner">100</div>
-            <div class="front answer">Millal tuuakse jõuludel tuppa kuusepuu?</div>
-            <div class="back question">Mis on 23. detsember</div>
-          </div>
-        </div>
-      </div>
-      <div class="grid-row grid-row-questions">
-        <div class="cell-group grid-cell" id="cell-33183544" data-row="2" data-col="0">
-          <div class="cell points">
-            <div class="cell-inner">200</div>
-            <div class="front answer">Kes mängis "üksinda kodus" Kevinit?</div>
-            <div class="back question">Kes on Macauly Culkin </div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-33183549" data-row="2" data-col="1">
-          <div class="cell points">
-            <div class="cell-inner">200</div>
-            <div class="front answer">Kes võitis "Su nägu kõlab tuttavalt" esimese hooaja?</div>
-            <div class="back question">Kes on Evelin Võigemast</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-33183554" data-row="2" data-col="2">
-          <div class="cell points">
-            <div class="cell-inner">200</div>
-            <div class="front answer">Briti kuulsaim poistebänd.</div>
-            <div class="back question">Kes on One Directon</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-33183559" data-row="2" data-col="3">
-          <div class="cell points">
-            <div class="cell-inner">200</div>
-            <div class="front answer">Mis on päikesesüsteemis esimene planeet päikesest?</div>
-            <div class="back question">Mis on Merkuur</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-33183564" data-row="2" data-col="4">
-          <div class="cell points">
-            <div class="cell-inner">200</div>
-            <div class="front answer">Kes on kirjutanud raamatu "Leiutajateküla Lotte" ?</div>
-            <div class="back question">Kes on Andrus Kivirähk</div>
-          </div>
-        </div>
-      </div>
-      <div class="grid-row grid-row-questions">
-        <div class="cell-group grid-cell" id="cell-33183545" data-row="3" data-col="0">
-          <div class="cell points">
-            <div class="cell-inner">300</div>
-            <div class="front answer">Üks maailma kulsaim paar, kes mängisid koos filmis " Mr. ja Mrs. Smith" ?</div>
-            <div class="back question">Kes on Brad Pitt ja Angelina Jolie</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-33183550" data-row="3" data-col="1">
-          <div class="cell points">
-            <div class="cell-inner">300</div>
-            <div class="front answer">Kes võitis saate "Su nägu kõlab tuttavalt" teise hooaja?</div>
-            <div class="back question">Kes on Koit Toome</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-33183555" data-row="3" data-col="2">
-          <div class="cell points">
-            <div class="cell-inner">300</div>
-            <div class="front answer">Mis riigi kuninganna on Elisabeth II?</div>
-            <div class="back question">Mis on Inglismaa</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-33183560" data-row="3" data-col="3">
-          <div class="cell points">
-            <div class="cell-inner">300</div>
-            <div class="front answer">Mis planeedist on inspireeritud Marsimehe vitamiinid?</div>
-            <div class="back question">Mis on Marss</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-33183565" data-row="3" data-col="4">
-          <div class="cell points">
-            <div class="cell-inner">300</div>
-            <div class="front answer">Mis on Austraalia pealinn?</div>
-            <div class="back question">Mis on Canberra</div>
-          </div>
-        </div>
-      </div>
-      <div class="grid-row grid-row-questions">
-        <div class="cell-group grid-cell" id="cell-33183546" data-row="4" data-col="0">
-          <div class="cell points">
-            <div class="cell-inner">400</div>
-            <div class="front answer">kes on Kanadast pärit kuulsaim popstaar?</div>
-            <div class="back question">Kes on Justin Bieber</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-33183551" data-row="4" data-col="1">
-          <div class="cell points">
-            <div class="cell-inner">400</div>
-            <div class="front answer">Mitmes on Eesti maailmas nahavähi arvukuse poolest?</div>
-            <div class="back question">Mis on esimene</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-33183556" data-row="4" data-col="2">
-          <div class="cell points">
-            <div class="cell-inner">400</div>
-            <div class="front answer">Lõuna-Prantsusmaal asuv "kuulsate ja rikaste kuurort" ?</div>
-            <div class="back question">Mis on Saint Tropez</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-33183561" data-row="4" data-col="3">
-          <div class="cell points">
-            <div class="cell-inner">400</div>
-            <div class="front answer">Mis oli selle planeedi nimi, mis eemaldati päikesesüsteemist?</div>
-            <div class="back question">Mis on Pluuto</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-33183566" data-row="4" data-col="4">
-          <div class="cell points">
-            <div class="cell-inner">400</div>
-            <div class="front answer">Millest on tulnud jõuluvana välimus?</div>
-            <div class="back question">Mis on Coca Cola reklaamist.</div>
-          </div>
-        </div>
-      </div>
-      <div class="grid-row grid-row-questions">
-        <div class="cell-group grid-cell" id="cell-13183546" data-row="4" data-col="0">
-          <div class="cell points">
-            <div class="cell-inner">450</div>
-            <div class="front answer">kes on Kanadast pärit kuulsaim popstaar?</div>
-            <div class="back question">Kes on Justin Bieber</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-13183551" data-row="4" data-col="1">
-          <div class="cell points">
-            <div class="cell-inner">450</div>
-            <div class="front answer">Mitmes on Eesti maailmas nahavähi arvukuse poolest?</div>
-            <div class="back question">Mis on esimene</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-13183556" data-row="4" data-col="2">
-          <div class="cell points">
-            <div class="cell-inner">450</div>
-            <div class="front answer">Lõuna-Prantsusmaal asuv "kuulsate ja rikaste kuurort" ?</div>
-            <div class="back question">Mis on Saint Tropez</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-13183561" data-row="4" data-col="4">
-          <div class="cell points">
-            <div class="cell-inner">450</div>
-            <div class="front answer">Mis oli selle planeedi nimi, mis eemaldati päikesesüsteemist?</div>
-            <div class="back question">Mis on Pluuto</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-131833556" data-row="4" data-col="2">
-          <div class="cell points">
-            <div class="cell-inner">450</div>
-            <div class="front answer">Lõuna-Prantsusmaal asuv "kuulsate ja rikaste kuurort" ?</div>
-            <div class="back question">Mis on Saint Tropez</div>
-          </div>
-        </div>
-      </div>
-      <div class="grid-row grid-row-questions grid-last-row">
-        <div class="cell-group grid-cell" id="cell-33183547" data-row="5" data-col="0">
-          <div class="cell points">
-            <div class="cell-inner">500</div>
-            <div class="front answer">Mis saatest sai kuulsaks perekond Kardashian?</div>
-            <div class="back question">Mis on "keeping up with Kardashians" .</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-33183552" data-row="5" data-col="1">
-          <div class="cell points">
-            <div class="cell-inner">500</div>
-            <div class="front answer">Kes kuulutas Tallinna üheks ilusaimaks linnaks jõulude ajal?</div>
-            <div class="back question">Kes on BBC</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-33183557" data-row="5" data-col="2">
-          <div class="cell points">
-            <div class="cell-inner">500</div>
-            <div class="front answer">Mis riik on saapa kujuline?</div>
-            <div class="back question">Mis on Itaalia</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-33183562" data-row="5" data-col="3">
-          <div class="cell points">
-            <div class="cell-inner">500</div>
-            <div class="front answer">Miks on Merkuuril võimatu elada?</div>
-            <div class="back question">Mis on,sest seal on liiga kuum.</div>
-          </div>
-        </div>
-        <div class="cell-group grid-cell" id="cell-33183567" data-row="5" data-col="4">
-          <div class="cell points">
-            <div class="cell-inner">500</div>
-            <div class="front answer">Mitu kilomeetrit on Tallinnast Helsingisse?</div>
-            <div class="back question">Mis on 76 km.</div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <div id="teams">
@@ -1829,34 +883,31 @@ function debounce(func, wait, immediate) {
       </div>
       <div class="modal-body">
         <div class="modal-inner">
+          <div class="question"></div>
+          <div class="answer"></div>
         </div>
       </div>
     </div>
+
   </div>
 
-  <span id="menu-picker" onclick="backToMenu()">
-    MENU
-  </span>
+  <span id="menu-picker">MENU</span>
 
   <div id="options" class="modal-wrapper">
     <div class="modal">
       <h1>Kuldvillak</h1>
-      <div id="team-chooser-wrapper">
-        <label for="team-chooser" hidden></label>
-        <select id="team-chooser">
-          <option value="0">No teams</option>
-          <option value="1">1 team</option>
-          <option value="2">2 teams</option>
-          <option value="3">3 teams</option>
-          <option value="4">4 teams</option>
-          <option value="5">5 teams</option>
-          <option id="last-option" value="more">Custom</option>
-        </select>
-        <input class="submit" type="button" id="submit" value="Start" onclick="game.init()" />
-        <span id="reset-all">
-          <input type="button" id="re-init" value="Reset" />
-        </span>
-      </div>
+      <label for="team-chooser" hidden></label>
+      <select id="team-chooser">
+        <option value="0">No teams</option>
+        <option value="1">1 team</option>
+        <option value="2">2 teams</option>
+        <option value="3">3 teams</option>
+        <option value="4">4 teams</option>
+        <option value="5">5 teams</option>
+        <option id="last-option" value="more">Custom</option>
+      </select>
+      <input class="submit" type="button" id="submit" value="Start"/>
+      <input type="button" id="reset-all" value="Reset"/>
       <p id="fullscreen">
         <span id="windows">Press <kbd>F11</kbd></span> <span id="mac">Select menu option <kbd>View &gt; Enter Fullscreen</kbd></span> for full-screen mode
       </p>
@@ -1871,5 +922,841 @@ function debounce(func, wait, immediate) {
       </script>
     </div>
   </div>
+  <script type="text/javascript">
+    const ESC = 27
+    const SPACE = 32
+
+    function b64en(str) {
+      return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)))
+    }
+    function b64de(str) {
+      return decodeURIComponent(atob(str).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+    }
+
+    const gameplayEl = document.getElementById("gameplay")
+    const gridEl = document.querySelectorAll(".grid")[0];
+    const optionsEl = document.getElementById("options")
+    const teamChooserEl = document.getElementById("team-chooser")
+    const teamsEl = document.getElementById("teams")
+
+    const submitEl = document.getElementById("submit")
+    const resetEl = document.getElementById("reset-all")
+
+    const modalEl = document.getElementById("question-modal")
+    const modalTitleEl = document.getElementById("question-title")
+
+    const modalQuestionEl = modalEl.querySelectorAll(".question")[0]
+    const modalAnswerEl = modalEl.querySelectorAll(".answer")[0]
+    const modalBodyEl = modalEl.querySelectorAll('.modal-body')[0]
+    const modalInnerEl = modalEl.querySelectorAll('.modal-inner')[0]
+
+    class Question {
+      constructor(question, answer, points) {
+        this.question = question
+        this.answer = answer
+        this.points = points
+        this._asked = false // make cell gray
+        this.answeredBy = [];
+        this.category = null;
+      }
+      setCategory(category) {
+        this.category = category;
+      }
+      getCategory() {
+        return this.category;
+      }
+      getQuestion() {
+        return this.question;
+      }
+      getAnswer() {
+        return this.answer;
+      }
+      getPoints() {
+        return this.points;
+      }
+      isAsked() {
+        return this._asked;
+      }
+      asked() {
+        this._asked = true
+      }
+      answered(team) {
+        this.answeredBy.push(team)
+      }
+      hashCode() {
+        let hash = 0;
+        for (const chr of this.getQuestion() + this.getAnswer()) {
+          hash  = ((hash << 5) - hash) + chr.charCodeAt(0);
+          hash |= hash & hash; // Convert to 32bit integer
+        }
+        return "q" + hash.toString();
+      }
+    }
+
+    class Category {
+      constructor(name) {
+        this.name = name;
+        this.questions = [];
+      }
+
+      addQuestion(question) {
+        question.setCategory(this)
+        this.questions.push(question)
+      }
+      removeQuestion(question) {
+        question.setCategory(null)
+        this.questions.slice(this.questions.indexOf(question), 1)
+      }
+      getQuestions() {
+        return this.questions;
+      }
+      getQuestionById(id) {
+        for (const question of this.getQuestions())
+          if (question.hashCode() === id) return question
+        return null
+      }
+      getQuestion(i) {
+        const qs = this.getQuestions()
+        if (i + 1 > qs.length) return null
+        return qs[i];
+      }
+
+      createQuestion(question, answer, points) {
+        this.addQuestion(new Question(question, answer, points))
+        return this;
+      }
+      getName() {
+        return this.name
+      }
+
+      hashCode() {
+        let hash = 0;
+        for (const chr of this.getName()) {
+          hash  = ((hash << 5) - hash) + chr.charCodeAt(0);
+          hash |= 0; // Convert to 32bit integer
+        }
+        return "c" + hash.toString();
+      }
+    }
+
+    class Team {
+      constructor(name, points=0) {
+        this.name = name
+        this._active = true
+
+        this.pointsManual = points ? [points, ] : []
+        this.correct = []
+        this.incorrect = []
+      }
+      addAnsweredQuestion(question, correct) {
+        if (correct)
+          this.correct.push(question)
+        else
+          this.incorrect.push(question)
+      }
+      setPoints(points) {
+        if (!Number.isInteger(points)) throw new Error('Type must be integer')
+        this.pointsManual.push(points - this.getPoints())
+
+      }
+      getPoints() {
+        const correctPoints = this.correct.map(q => q.getPoints()).reduce((a,b) => a + b, 0);
+        const incorrectPoints = this.incorrect.map(q => q.getPoints()).reduce((a,b) => a + b, 0);
+        const manualPoints = this.pointsManual.reduce((a,b) => a + b, 0);
+        return correctPoints + incorrectPoints + manualPoints;
+      }
+      setName(name) {
+        this.name = name
+      }
+      getName() {
+        return this.name
+      }
+      getStatus() {
+        return this._active;
+      }
+      active() {
+        this._active = true;
+      }
+      inactive() {
+        this._active = false;
+      }
+
+      getState() {
+        const state = {}
+        state["name"] = this.getName()
+        state["points"] = this.getPoints()
+        return state
+      }
+      hashCode() {
+        let hash = 0;
+        for (const chr of this.getName()) {
+          hash  = ((hash << 5) - hash) + chr.charCodeAt(0);
+          hash |= 0; // Convert to 32bit integer
+        }
+        return "t" + hash.toString();
+      }
+    }
+
+    class Kuldvillak {
+
+      constructor(name) {
+        this.name = name
+        this.teams = []
+        this.categories = []
+        this.answeredQuestions = []
+        this.lastQuestion = null
+      }
+      addAnsweredQuestion(question) {
+        for (const q of this.answeredQuestions)
+          if (q === question) return
+        this.answeredQuestions.push(question)
+      }
+      getQuestion(id) {
+        for (const cat of this.getCategories()) {
+          const question = cat.getQuestionById(id)
+          if (question) return question
+        }
+        return null
+      }
+      setLastQuestion(question) {
+        this.lastQuestion = question;
+      }
+      getLastQuestion() {
+        return this.lastQuestion;
+      }
+      addTeam(team) {
+        this.teams.push(team)
+      }
+      removeTeam(team) {
+        this.teams.slice(this.teams.indexOf(team), 1)
+      }
+      getTeams() {
+        return this.teams;
+      }
+
+      addCategory(category) {
+        this.categories.push(category)
+      }
+      removeCategory(category) {
+        this.categories.slice(this.categories.indexOf(category), 1)
+      }
+      getCategories() {
+        return this.categories;
+      }
+      loadData(data) {
+        for (const cat of data) {
+          const c = new Category(cat.c)
+          for (const q of cat.qs)
+            c.addQuestion(new Question(q.q, q.a, q.p))
+          this.addCategory(c)
+        }
+      }
+
+      getName() {
+        return this.name;
+      }
+
+      getState() {
+        const state = {}
+        state["name"] = this.getName();
+        state["teams"] = this.getTeams().map(t => t.getState());
+        state["inerts"] = this.answeredQuestions.map(q => q.hashCode())
+        return state
+      }
+
+      hashCode() {
+        let hash = 0;
+        for (const chr of this.getName()) {
+          hash  = ((hash << 5) - hash) + chr.charCodeAt(0);
+          hash |= 0; // Convert to 32bit integer
+        }
+        return "g" + hash.toString();
+      }
+    }
+
+    const ListenerBuilder = function (prototype) {
+      prototype.listeners = {}
+      prototype.on = function (event, handler) {
+        if (event in this.listeners) this.listeners[event].push(handler)
+        else this.listeners[event] = [handler, ]
+      }
+      prototype.emit = function (event) {
+        for (const handler of this.listeners[event]) handler(this)
+      }
+      prototype.addListener = function (func, listener) {
+        const originalFunctionName = "old_" + func.name // Rename original function
+        prototype[originalFunctionName] = func
+
+        if (!(listener in prototype.listeners)) // Add listener key
+          prototype.listeners[listener] = []
+          prototype[func.name] = function (...args) { // Run old and then listener
+          this[originalFunctionName](...args)
+          this.emit(listener)
+        }
+      }
+    }
+
+    ListenerBuilder(Question.prototype)
+    ListenerBuilder(Category.prototype)
+    ListenerBuilder(Team.prototype)
+    ListenerBuilder(Kuldvillak.prototype)
+
+    Kuldvillak.prototype.addListener(Kuldvillak.prototype.addCategory, "category")
+    Kuldvillak.prototype.addListener(Kuldvillak.prototype.removeCategory, "category")
+
+    Kuldvillak.prototype.addListener(Kuldvillak.prototype.addTeam, "team")
+    Kuldvillak.prototype.addListener(Kuldvillak.prototype.removeTeam, "team")
+
+    Team.prototype.addListener(Team.prototype.setPoints, "points")
+    Team.prototype.addListener(Team.prototype.active, "status")
+
+    Category.prototype.addListener(Category.prototype.addQuestion, "question")
+    Category.prototype.addListener(Category.prototype.removeQuestion, "question")
+
+    Question.prototype.addListener(Question.prototype.asked, "asked")
+    Question.prototype.addListener(Question.prototype.answered, "answered")
+
+    function createTeamTab(c) {
+      const teamEl = document.createElement("div")
+      const nameEl = document.createElement("h3")
+      const pointsEl = document.createElement("h3")
+      const pointerEl = document.createElement("div")
+      const plusEl = document.createElement("span")
+      const minusEl = document.createElement("span")
+      nameEl.contentEditable = "true"
+      pointsEl.contentEditable = "true"
+      teamEl.className = "team";
+      nameEl.className = "name";
+      pointsEl.className = "points";
+      pointerEl.className = "pointer";
+      plusEl.className = "plus";
+      minusEl.className = "minus";
+      plusEl.innerText = "+"
+      minusEl.innerText = "-"
+      teamEl.appendChild(nameEl)
+      teamEl.appendChild(pointsEl)
+      teamEl.appendChild(pointerEl)
+      pointerEl.appendChild(plusEl)
+      pointerEl.appendChild(minusEl)
+      return teamEl
+    }
+
+    function createCategoryCell(c) {
+      const catEl = document.createElement("div")
+      const cellEl = document.createElement("div")
+      const innerEl = document.createElement("div")
+      catEl.className = "grid-cell";
+      cellEl.className = "cell";
+      innerEl.className = "cell-inner cat-cell";
+      catEl.appendChild(cellEl)
+      cellEl.appendChild(innerEl)
+      innerEl.innerText = c
+      return catEl
+    }
+
+    function createQuestionCell(id, q, a, p) {
+      const questionEl = document.createElement("div")
+      const cellEl = document.createElement("div")
+      const innerEl = document.createElement("div")
+      const frontEl = document.createElement("div")
+      const backEl = document.createElement("div")
+      questionEl.className = "cell-group grid-cell"
+      cellEl.className = "cell points"
+      innerEl.className = "cell-inner"
+      frontEl.className = "front question "
+      backEl.className = "back answer"
+      questionEl.appendChild(cellEl)
+      cellEl.appendChild(innerEl)
+      cellEl.appendChild(frontEl)
+      cellEl.appendChild(backEl)
+      innerEl.innerText = p
+      frontEl.innerText = q
+      backEl.innerText = a
+      questionEl.id = id
+      return questionEl
+    }
+
+    function createEmptyCell() {
+      const questionEl = document.createElement("div");
+      questionEl.className = "cell-group grid-cell empty";
+      return questionEl;
+    }
+
+    function renderGrid(game) {
+      const categories = game.getCategories();
+      const maxQuestions = Math.max(...categories.map(c => c.getQuestions().length));
+
+      for (let i = 0; i <= maxQuestions; i++) {
+        const gridRowEl = document.createElement('div');
+
+        if (i === 0) { // Categories
+          gridRowEl.className = "grid-row grid-row-cats";
+        } else if (i === 1) { // Questions first line
+          gridRowEl.className = "grid-row grid-row-questions grid-first-row";
+        } else if (i === maxQuestions) { // Questions last line
+          gridRowEl.className = "grid-row grid-row-questions grid-last-row";
+        } else
+          gridRowEl.className = "grid-row grid-row-questions";
+
+        for (let j = 0; j < categories.length; j++) {
+          let cellEl;
+          const category = categories[j];
+          if (i === 0) { // Category
+            cellEl = createCategoryCell(category.getName());
+          } else { // Question
+            const q = category.getQuestion(i - 1);
+            if (q) {
+              cellEl = createQuestionCell(q.hashCode(), q.getQuestion(), q.getAnswer(), q.getPoints());
+              cellEl.onclick = () => {
+                getCurrentGame().setLastQuestion(q)
+                modal.show(q)
+              }
+            } else
+              cellEl = createEmptyCell();
+          }
+          cellEl.setAttribute('data-row', i.toString());
+          cellEl.setAttribute('data-col', j.toString());
+          gridRowEl.appendChild(cellEl)
+        }
+
+        gridEl.appendChild(gridRowEl)
+      }
+    }
+
+    function removeClass(selector, cls) {
+      for (const el of document.querySelectorAll(selector))
+        el.classList.remove(cls);
+    }
+
+    function debounce(func, wait, immediate) {
+      let timeout;
+      if (immediate) return func
+      return () => {clearTimeout(timeout);timeout = setTimeout(func, wait)};
+    }
+
+    function on(eventName, elementSelector, handler, extra) {
+      document.addEventListener(eventName, function(e) {
+        // loop parent nodes from the target to the delegation node
+        for (let target = e.target; target && target !== this; target = target.parentNode) {
+          if (matches(target, elementSelector)) {
+            handler.call(target, e);
+            break;
+          }
+        }
+      }, extra || false);
+    }
+
+    function ready(fn) {
+      if (document.readyState !== 'loading' && document.body) fn();
+      else document.addEventListener('DOMContentLoaded', fn);
+    }
+
+    const game = {
+      game: new Kuldvillak('Kuldvillak'),
+      first_render: true
+    }
+
+    initial_state = { "page": "menu" }
+    history.replaceState(initial_state, "Game")
+
+    function getCurrentGame() {
+      return game.game;
+    }
+    // function setCurrentGame(game) {
+    //   game.game = game
+    // }
+
+    function clearState() {
+      localStorage.removeItem(getCurrentGame().hashCode())
+    }
+    function getState() {
+      const state = localStorage.getItem(getCurrentGame().hashCode())
+      return state ? JSON.parse(state) : null;
+    }
+
+    const newReady = function() {
+      const game = getCurrentGame()
+      const saveState = () => localStorage.setItem(game.hashCode(), JSON.stringify(getCurrentState()))
+      game.loadData(gameData)
+      renderGrid(game)
+      resize()
+      window.addEventListener("resize", debounce(resize, 40, false));
+      // renderState(initial_state)
+
+      // on minus pluss points save state
+
+    }
+    ready(newReady)
+
+    function renderMenu() {
+      const old_state = getState() || !game.first_render
+      if (!game.first_render) {
+        submitEl.value = "Continue"
+        resetEl.style.display = ""
+      } else if (old_state) {
+        submitEl.value = "Continue"
+        resetEl.style.display = ""
+        // let teams = old_state.teams.length;
+        // if (teams > 5) {
+        //   let opt = document.createElement("option");
+        //   opt.setAttribute("value", teams);
+        //   opt.textContent = teams + " teams"
+        //   // teamChooserEl.insertBefore(opt, document.getElementById("last-option"));
+        // }
+        teamChooserEl.value = old_state.teams.length;
+      } else {
+        submitEl.value = "Start"
+        resetEl.style.display = "none"
+      }
+    }
+
+
+    // ready(() => {
+    //
+    //   on("keyup change input blur focus", "#teams .name, #teams .points", debouncedSaveState);
+    //
+    //   on("click", ".grid-row-questions .grid-cell", function() {modal.show(this)})
+    //
+    //   // handle points clicks
+    //   on("click", ".minus, .plus", function(e) {
+    //     const $team = closest(this, ".team");
+    //     const $points = $team.querySelectorAll(".points")[0];
+    //     const points = parseInt($points.innerText);
+    //     if (isNaN(points)) {
+    //       alert("Error! The score for this team is not a number. You need to edit the score and change it to a number.");
+    //       return
+    //     }
+    //     const active_question = document.querySelectorAll(".active-question .cell-inner")[0];
+    //     const fallback = document.querySelectorAll(".grid-row-questions .cell-inner")[0];
+    //     let val = parseInt(active_question ? active_question.innerText : fallback.innerText);
+    //     if (this.classList.contains("minus")) {
+    //       val = -val;
+    //     }
+    //     $points.innerText = points + val;
+    //     if (active_question) {
+    //       document.querySelectorAll(".active-question")[0].classList.add("inert");
+    //     }
+    //     debouncedSaveState();
+    //   });
+    // });
+
+    const shrink_cell_cache = {};
+    let enable_caching = true;
+
+    function shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms) {
+      let cached;
+      let cache_key;
+      if (enable_caching) {
+        cache_key = [max_width, max_height, $cell.innerHTML].join(".");
+        cached = shrink_cell_cache[cache_key];
+      } else
+        return _shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms);
+
+      if (cached) {
+        $scaler.style.fontSize = cached.font_size + "px";
+        $scaler.style.transform = (transforms || "") + " scale(" + cached.scale + ") ";
+      } else
+        shrink_cell_cache[cache_key] = _shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms);
+    }
+
+    function shrink_in_place(max_font_size, min_font_size) {
+      const a = { length: max_font_size + 1 }
+      let font_size = binarySearch(a, (el, array, font_size) => {
+        modalInnerEl.style.fontSize = font_size + "px";
+        const isHorizontalScrollbar = modalInnerEl.scrollWidth > modalInnerEl.clientWidth;
+        const isVerticalScrollbar = modalInnerEl.scrollHeight > modalInnerEl.clientHeight;
+        return isHorizontalScrollbar || isVerticalScrollbar
+      });
+      font_size = font_size - 1
+      font_size = Math.max(min_font_size, Math.min(font_size, max_font_size));
+      modalInnerEl.style.fontSize = font_size + "px";
+      return font_size;
+    }
+
+    function binarySearch(array, pred) {
+      let lo = -1, hi = array.length;
+      while (1 + lo < hi) {
+        const mi = lo + ((hi - lo) >> 1);
+        if (pred(array[mi], array, mi)) hi = mi;
+        else lo = mi;
+      }
+      return hi;
+    }
+
+    function _shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms, min_font_size) {
+      if (min_font_size === undefined)
+        min_font_size = 1;
+
+      let font_size = Math.max(min_font_size, max_font_size);
+
+      if (!$scaler) return { font_size: font_size }
+
+      $cell.style.fontSize = "";
+      $scaler.style.fontSize = font_size + "px";
+      $scaler.style.transform = "";
+
+      const extra_width = 0
+      const extra_height = 0
+
+      const bbox = getBoundingClientRect($scaler);
+      const w = bbox.width;
+      const h = bbox.height;
+      const scale = Math.min(1, Math.min((max_width - extra_width) / w, (max_height - extra_height) / h));
+      if (scale !== 1) {
+        //debugger;
+      }
+      $scaler.style.transform = (transforms || "") + " scale(" + scale + ") ";
+
+      return { font_size: font_size, scale: scale };
+    }
+
+    function getBoundingClientRect(el) {
+      const bbox = el.getBoundingClientRect();
+
+      return {
+        top: bbox.top + (window.scrollY || document.documentElement.scrollTop || 0),
+        left: bbox.left + (window.scrollX || document.documentElement.scrollLeft || 0),
+        width: bbox.width,
+        height: bbox.height,
+        x: bbox.x,
+        y: bbox.y
+      }
+    }
+
+    function matches(el, selector) {
+      return (el.matches || el.matchesSelector || el.msMatchesSelector || el.mozMatchesSelector || el.webkitMatchesSelector || el.oMatchesSelector).call(el, selector);
+    }
+
+    function prepwork(cell, scale_factor) {
+      if (scale_factor === undefined) scale_factor = 1;
+
+      const width = cell.parentElement.clientWidth;
+      const height = cell.parentElement.clientHeight;
+      const inner = cell.querySelectorAll(".cell-inner")[0];
+
+      shrink_cell(cell, inner, width * scale_factor, height * scale_factor, 32, "");
+      return inner
+    }
+
+    function minirender(grid, question_scale_factor) {
+      if (question_scale_factor === undefined)
+        question_scale_factor = 1;
+
+      miniresize(grid, grid.querySelectorAll(".grid-row-cats .cell"), true, 1);
+      miniresize(grid, grid.querySelectorAll(".grid-row-questions .cell"), false, question_scale_factor);
+    }
+
+    function miniresize(grid, cells, is_cats, scale_factor) {
+      if (is_cats) {
+        const cat = grid.querySelectorAll(".grid-row-cats")[0]
+        cat.style.height = "auto";
+        let max_height = 0;
+        for (const cell of cells) {
+          const inner = prepwork(cell);
+          cell.client_height = inner.clientHeight;
+          max_height = Math.max(max_height, inner.clientHeight);
+        }
+        cat.style.height = max_height + "px";
+      } else
+        for (const cell of cells)
+          prepwork(cell, scale_factor)
+    }
+
+    function getCurrentState() {
+      return getCurrentGame().getState()
+    }
+
+    function getOldState() {
+      const old_state = localStorage.getItem("game-2161995")
+      return old_state ? JSON.parse(old_state) : null;
+    }
+
+    function resize() {
+      let bbox_teams = getBoundingClientRect(teamsEl)
+      let rows = document.querySelectorAll(".grid-row").length;
+      let h;
+      if (bbox_teams.height === 0) h = window.innerHeight;
+      else h = bbox_teams.top + ((window.innerHeight - bbox_teams.height) / (rows)) / 4
+
+      gridEl.style.height = h + "px";
+      minirender(gridEl, .8);
+    }
+
+
+    game.init = function(clear) {
+      let val = teamChooserEl.value;
+
+      if (isNaN(val)) {
+        val = 0
+        do {
+          const n = prompt("Enter the number of teams you have");
+          val = parseInt(n, 10) || 0;
+        } while (val <= 0);
+      }
+      renderState({ "page": "game" })
+      // add all the teams
+      teamsEl.style.display = "flex";
+      let teams = document.querySelectorAll("#teams .team");
+
+      for (const team of teams) team.style.display = "none";
+
+      for (let i = 0; i < val; i++) {
+        var t = teams[i];
+        if (!t) {
+          var t = teams[0].cloneNode(true)
+          teams[0].parentElement.appendChild(t);
+          t.querySelectorAll(".name")[0].textContent = "Team " + (i + 1)
+          t.querySelectorAll(".points")[0].textContent = "0"
+        } else {
+          t = teams[i]
+        }
+        t.style.display = "block";
+      }
+
+      teams = document.querySelectorAll("#teams .team");
+      if (game.first_render) {
+        const old_state = getOldState();
+        if (old_state) {
+          for (let i = 0; i < val; i++) {
+            const t = teams[i];
+            if (old_state.teams[i]) {
+              const name = old_state.teams[i].name;
+              const points = old_state.teams[i].points;
+              t.querySelectorAll(".name")[0].textContent = name
+              t.querySelectorAll(".points")[0].textContent = points
+            }
+          }
+
+          // restore the inert questions
+          const inerts = old_state.inerts;
+          for (const id in inerts)
+            document.getElementById(id).classList.add("inert");
+
+        }
+      } else if (clear) {
+        for (let i = 0; i < val; i++) {
+          const t = teams[i];
+          t.querySelectorAll(".name")[0].textContent = "Team " + (i + 1)
+          t.querySelectorAll(".points")[0].textContent = "0"
+        }
+        removeClass(".inert", "inert");
+      } else {
+
+      } // coming just restore
+
+      resize()
+      history.pushState({ "page": "game" }, "Game");
+      game.first_render = false;
+    }
+
+    function renderState(state) {
+      optionsEl.style.display = "none";
+      teamsEl.style.display = "none";
+      gameplayEl.style.filter = "";
+
+      modal.is_open = false;
+      modalEl.style.display = "none";
+      modalEl.classList.remove("expanded");
+      modalEl.style.borderWidth = "3px";
+
+      if (state.page === "menu") {
+        optionsEl.style.display = "block";
+        renderMenu();
+      } else {
+        teamsEl.style.display = "";
+        gameplayEl.style.filter = "blur(0px)";
+        if (state.page === "slide")
+          modal.show(getCurrentGame().getQuestion(state.cell), true);
+      }
+    }
+
+    window.onpopstate = () => renderState(window.history.state);
+
+    let modal = function() {}
+
+    modal.hide = function () {
+      modalAnswerEl.classList.remove("reveal");
+      renderState({ "page": "game" });
+    }
+
+    modal.reveal = function() {
+      modalAnswerEl.classList.add("reveal");
+      const question = getCurrentGame().getLastQuestion()
+      question.asked()
+      document.getElementById(question.hashCode()).classList.add("inert");
+    }
+
+    modal.show = function(question, no_push_state) {
+      modalTitleEl.innerText = question.getCategory().getName() + " " + question.getPoints()
+
+      const id = question.hashCode()
+      if (!no_push_state)
+        history.pushState({ "page": "slide", "cell": id }, "Game");
+      const questionEl = document.getElementById(id)
+      let bbox = questionEl.getBoundingClientRect();
+
+      modalEl.style.display = "block";
+      modalEl.style.opacity = "0";
+
+      let position_of_top = getBoundingClientRect(modalBodyEl).top;
+      let position_of_bottom = getBoundingClientRect(teamsEl).top || window.innerHeight;
+      let h = position_of_bottom - position_of_top - 20 // 20 pixels for some extra room
+
+      modalBodyEl.style.maxHeight = h + "px";
+      modalInnerEl.style.height = h + "px";
+
+      modalQuestionEl.innerText = question.getQuestion()
+      modalAnswerEl.innerText = question.getAnswer()
+      shrink_in_place(100, 24);
+
+      modalEl.style.transform = `translate(${bbox.left}px, ${bbox.top}px) scale(${bbox.width / window.innerWidth}, ${bbox.height / window.innerHeight})`
+      modalEl.style.opacity = "1";
+
+      removeClass(".expanded", "expanded");
+      setTimeout(() => {
+        modalEl.classList.add("expanded");
+        modalEl.style.top = "0";
+        modalEl.style.left = "0";
+        modalEl.style.bottom = "0";
+        modalEl.style.right = "0";
+        modalEl.style.width = "100%";
+        modalEl.style.height = "100%";
+        modalEl.style.borderWidth = "0";
+        modalEl.style.transform = "translate(0px, 0px) scale(1)"
+      }, 1);
+      modal.is_open = true; // flag for the keyboard event
+    }
+
+    function backToMenu() {
+      renderState({ "page": "menu" });
+    }
+
+    on("click", "#answer-button", () => modal.reveal());
+    on("click", "#continue-button", () => modal.hide());
+    on("click", "#menu-picker", () => backToMenu());
+    on("click", "#submit", () => game.init());
+    on("click", "#reset-all", (e) => {
+      e.preventDefault();
+      if (confirm("This will clear the scores and team names, and start a new game. Click OK if you want to do this")) {
+        clearState();
+        game.init(true);
+      }
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if (modal.is_open) {
+        if (e.keyCode === ESC) {
+          e.preventDefault();
+          modal.hide();
+        } else if (e.keyCode === SPACE) {
+          e.preventDefault();
+          modal.reveal();
+        }
+      }
+    }, false);
+  </script>
 </body>
 </html>
+
+
+
