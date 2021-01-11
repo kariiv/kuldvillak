@@ -274,6 +274,7 @@ h3 {
     max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
+    padding: 5px;
 }
 
 #teams {
@@ -741,4 +742,17 @@ kbd {
     width: 100%;
     height: 34px;
     margin-bottom: 0;
+}
+
+.modal-footer.create {
+    background-color: rgba(108, 117, 125, 0.15);
+}
+
+.invalid {
+    /*border: red solid 1px;*/
+    box-shadow: 0 0 8px red;
+    border-radius: 4px;
+}
+.table > :not(:last-child) > :last-child > * {
+    border-bottom-color: inherit !important;
 }

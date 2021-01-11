@@ -7,7 +7,7 @@
     <meta name="description" content="Kuldvillak? Kas sina juba teadsid?"/>
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
-</head>
+    <link rel="icon" type="image/png" href="favicon.png">
 </head>
 <body>
 <div id="gameplay">
@@ -38,7 +38,7 @@
         <label for="game-chooser" hidden></label>
         <select id="game-chooser"></select>
         <label for="team-chooser">Teams:</label>
-        <input type="number" id="team-chooser" value="0"/>
+        <input type="number" id="team-chooser" value="0" min="1" max="20"/>
         <br>
         <button class="btn btn-primary" id="submit">Start</button>
         <button id="reset-all">Reset</button>
@@ -49,63 +49,23 @@
         <script src="assets/js/fullscreen.js"></script>
         <button class="btn btn-success" id="create-game" data-bs-toggle="modal" data-bs-target="#create-game-modal">Create game</button>
     </div>
-
 </div>
 <!-- Modal -->
 <div class="modal fade" id="create-game-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" contenteditable="true" id="creator-title">NewGame#1</h4>
+                <h4 class="modal-title" contenteditable="true" id="creator-title">NewGame</h4>
             </div>
-            <div class="modal-body" id="creator-table">
-                <h2 contenteditable="true">Category#1</h2>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Question</th>
-                            <th scope="col">Answer</th>
-                            <th scope="col">Points</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td contenteditable="true">Kes oli see mees?</td>
-                            <td contenteditable="true">Kes on rerstar</td>
-                            <td contenteditable="true">200</td>
-                        </tr>
-                        <tr>
-                            <td contenteditable="true">KEs oli mehe naine?</td>
-                            <td contenteditable="true">Kes on maskter</td>
-                            <td contenteditable="true">300</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <h2 contenteditable="true">Category#2</h2>
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">Question</th>
-                        <th scope="col">Answer</th>
-                        <th scope="col">Points</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>Kes oli see mees?</td>
-                        <td>Kes on rerstar</td>
-                        <td>200</td>
-                    </tr>
-                    <tr>
-                        <td>KEs oli mehe naine?</td>
-                        <td>Kes on maskter</td>
-                        <td>300</td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <input id="creator-import" type="text" class="form-control" placeholder="Import field" aria-label="Import field" aria-describedby="import-btn">
+                    <button class="btn btn-outline-primary" type="button" id="import-btn">Import</button>
+                </div>
+                <div id="creator-table"></div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <div class="modal-footer create">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-danger" id="creator-reset">Reset</button>
                 <button type="button" class="btn btn-warning" id="creator-copy">Copy</button>
                 <button type="button" class="btn btn-success" id="creator-save" style="flex:auto">Save</button>
@@ -114,6 +74,7 @@
     </div>
 </div>
 
+<script src="assets/js/lz-string.js"></script>
 <script src="assets/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/game.js"></script>
 <script src="assets/js/controller.js"></script>

@@ -27,7 +27,6 @@ function createElement(el, className, parentEl, innerText) {
     if (parentEl) parentEl.appendChild(El);
     return El;
 }
-
 function createTeamTab(team) {
     if (!team.getStatus()) return null
     const teamEl = createElement("div", "team", teamsEl);
@@ -37,31 +36,30 @@ function createTeamTab(team) {
     const plusEl = createElement("span", "plus", pointerEl, "+");
     const minusEl = createElement("span", "minus", pointerEl, "-");
     plusEl.onclick = () => {
-        const last = getCurrentGame().getLastQuestion()
+        const last = gameController.getCurrentGame().getLastQuestion()
         if (last) {
             team.addAnsweredQuestion(last, true)
             pointsEl.value = team.getPoints().toString()
-            saveState()
+            gameController.saveState()
         }
     }
     minusEl.onclick = () => {
-        const last = getCurrentGame().getLastQuestion()
+        const last = gameController.getCurrentGame().getLastQuestion()
         if (last) {
             team.addAnsweredQuestion(last, false)
             pointsEl.value = team.getPoints().toString()
-            saveState()
+            gameController.saveState()
         }
     }
     nameEl.onchange = (e) => {
         team.setName(e.target.value)
-        saveState()
+        gameController.saveState()
     }
-
     pointsEl.onchange = (e) => {
         try {
             team.setPoints(parseInt(e.target.value))
             e.target.value = team.getPoints()
-            saveState()
+            gameController.saveState()
         } catch (err) {
             alert("Input must be integer!")
             e.target.value = team.getPoints()
@@ -123,10 +121,10 @@ function renderGrid(game) {
                 if (q) {
                     cellEl = createQuestionCell(q.hashCode(), q.getQuestion(), q.getAnswer(), q.getPoints(), q.isAsked());
                     cellEl.onclick = () => {
-                        getCurrentGame().setLastQuestion(q)
+                        gameController.getCurrentGame().setLastQuestion(q)
                         renderState({"page": "slide", "cell": q.hashCode()})
                     }
-                } else
+                } else // Empty Cell
                     cellEl = createEmptyCell();
             }
             cellEl.setAttribute('data-row', i.toString());
@@ -136,118 +134,163 @@ function renderGrid(game) {
     }
 }
 
-function removeClass(selector, cls) {
-    for (const el of document.querySelectorAll(selector))
-        el.classList.remove(cls);
-}
-
-function debounce(func, wait, immediate) {
-    let timeout;
-    if (immediate) return func
-    return () => {
-        clearTimeout(timeout);
-        timeout = setTimeout(func, wait)
-    };
-}
-
-function on(eventName, elementSelector, handler, extra) {
-    document.addEventListener(eventName, function (e) {
-        // loop parent nodes from the target to the delegation node
-        for (let target = e.target; target && target !== this; target = target.parentNode) {
-            if (matches(target, elementSelector)) {
-                handler.call(target, e);
-                break;
-            }
-        }
-    }, extra || false);
-}
-
 function ready(fn) {
     if (document.readyState !== 'loading' && document.body) fn();
     else document.addEventListener('DOMContentLoaded', fn);
 }
 
-const game = {
-    game: null
+class GameControllerError extends Error {
+    constructor(message) {
+        super(message); // (1)
+        this.name = "GameControllerError"; // (2)
+    }
+}
+
+class GameController {
+    constructor() {
+        this.game = null;
+        this.games = [];
+
+        gameChooserEl.onchange = (e) => this.loadGame(e.target.value)
+    }
+
+    addGame(game, save) {
+        console.log("adding game", game)
+        for (const _game of this.getGames()) {
+            if (_game.getName() === game.getName())
+                throw new GameControllerError('Game with the same name already exists')
+            if (_game.hashCode() === game.hashCode())
+                throw new GameControllerError('Game with the same hashCode already exists')
+        }
+        this.games.push(game)
+        if (save) this.saveState(game)
+    }
+
+    init() {
+        this.game = null;
+        this.games = [];
+
+        for (let i = 0, len = localStorage.length; i < len; ++i ) {
+            const state = this.getState(localStorage.key(i))
+            if (!state) continue
+            try {
+                this.addGame(new Kuldvillak().loadState(state))
+            } catch (e) {
+                confirm(e.message)
+                console.log(e)
+            }
+        }
+    }
+
+    play() {
+        let val = parseInt(teamChooserEl.value)
+        if (val < 0) {
+            teamChooserEl.value = 0
+            return alert("Teams count must be >= 0")
+        }
+
+        const game = this.getCurrentGame()
+        const teams = game.getTeams()
+
+        teamsEl.innerHTML = ''
+
+        if (val < teams.length) {
+            for (let i = val - 1; i < val; i++)
+                game.getTeams()[i].inactive()
+        } else if (val > teams.length) {
+            for (let i = teams.length; i < val; i++)
+                game.addTeam(new Team("Team " + (i + 1), 0))
+        }
+        for (let i = 0; i < val; i++) {
+            const team = game.getTeams()[i]
+            team.active()
+            createTeamTab(team)
+        }
+        this.saveState()
+        renderState({"page": "game"})
+        resize()
+    }
+
+    loadGame(game) {
+        if (typeof game === 'string')
+            game = this.getGame(game)
+
+        if (!game) {
+            confirm('Game not found!')
+            throw new Error('Game not found!')
+        }
+
+        // const state = this.getState(key)
+        // if (!state) return
+        // const {name} = state
+        // let game = new Kuldvillak(name)
+        // game.loadState(state)
+
+        this.setCurrentGame(game)
+        renderGrid(game)
+        resize()
+    }
+    getGames() {
+        return this.games
+    }
+    getGame(key) {
+        return this.getGames().find(g => g.hashCode() === key)
+    }
+
+    getState(key) {
+        const state = localStorage.getItem(key ? key : this.getCurrentGame().hashCode())
+        return state ? JSON.parse(state) : null;
+    }
+    saveState(game) {
+        if (!game) game = this.getCurrentGame()
+        localStorage.setItem(game.hashCode(), JSON.stringify(game.getState()))
+    }
+    clearState() {
+        const state = this.getState()
+        if (state) {
+            state["teams"] = []
+            state["inerts"] = []
+            localStorage.setItem(state.id, JSON.stringify(state))
+            newReady()
+        }
+    }
+
+    getCurrentGame() {
+        return this.game;
+    }
+    setCurrentGame(_game) {
+        this.game = _game
+    }
 }
 initial_state = {"page": "menu"}
 
-function loadGame(key) {
-    const state = getState(key)
-    let _game;
-    if (state) {
-        const {name} = state
-        _game = new Kuldvillak(name)
-        _game.loadState(state)
-    } else {
-        _game = new Kuldvillak('Kuldvillak')
-        _game.loadData(gameData)
-    }
-
-    setCurrentGame(_game)
-    renderGrid(_game)
-    resize()
-    return _game
-}
-
-function getCurrentGame() {
-    return game.game;
-}
-
-function setCurrentGame(_game) {
-    game.game = _game
-}
-
-function clearState() {
-    const state = getState()
-    if (state) {
-        state["teams"] = []
-        state["inerts"] = []
-        localStorage.setItem(state.id, JSON.stringify(state))
-        newReady()
-    }
-}
-
-function getState(key) {
-    const state = localStorage.getItem(key ? key : getCurrentGame().hashCode())
-    return state ? JSON.parse(state) : null;
-}
-
-function saveState() {
-    const _game = getCurrentGame()
-    localStorage.setItem(_game.hashCode(), JSON.stringify(_game.getState()))
-}
-
-window.addEventListener("resize", debounce(resize, 40, false));
-
-gameChooserEl.onchange = (e) => loadGame(e.target.value)
 
 const newReady = function () {
+    gameController.init()
     gameChooserEl.innerHTML = ''
-    for (let i = 0, len = localStorage.length; i < len; ++i ) {
-        const state = JSON.parse(localStorage.getItem(localStorage.key( i )))
-        if (i === 0)  loadGame(state.id)
-        const opt = document.createElement('option')
-        opt.appendChild(document.createTextNode(state.name));
-        opt.value = state.id
-        gameChooserEl.appendChild(opt)
+    let first = true;
+    for (const game of gameController.getGames()) {
+        const opt = createElement('option', null, gameChooserEl, game.getName())
+        opt.value = game.hashCode()
+
+        if (first) gameController.loadGame(game) || (first = false)
     }
     renderState(initial_state)
 }
 
-ready(newReady)
 
 function renderMenu() {
-    const old_state = getState()
     optionsEl.style.display = "block";
-    if (!old_state || (!old_state.teams.length && !old_state.inerts.length)) {
-        submitEl.value = "Start";
-        resetEl.style.display = "none";
-        teamChooserEl.value = 2; // DEFAULT VALUE
-    } else {
-        submitEl.value = "Continue"
+
+    const game = gameController.getCurrentGame()
+    if (game && game.isStarted()) {
+        submitEl.innerText = "Continue"
+        teamChooserEl.value = gameController.getCurrentGame().getTeams().length;
         resetEl.style.display = ""
-        teamChooserEl.value = old_state.teams.length;
+    } else {
+        submitEl.innerText = "Start";
+        teamChooserEl.value = 3 // DEFAULT VALUE}
+        resetEl.style.display = "none";
     }
 }
 
@@ -272,7 +315,7 @@ function renderState(state) {
         teamsEl.style.display = "flex";
         gameplayEl.style.filter = "blur(0px)";
         if (state.page === "slide")
-            modal.show(getCurrentGame().getQuestion(state.cell), true);
+            modal.show(gameController.getCurrentGame().getQuestion(state.cell));
     }
 }
 
@@ -280,6 +323,30 @@ window.onpopstate = () => renderState();
 
 const shrink_cell_cache = {};
 let enable_caching = true;
+
+function removeClass(selector, cls) {
+    for (const el of document.querySelectorAll(selector))
+        el.classList.remove(cls);
+}
+function debounce(func, wait, immediate) {
+    let timeout;
+    if (immediate) return func
+    return () => {
+        clearTimeout(timeout);
+        timeout = setTimeout(func, wait)
+    };
+}
+function on(eventName, elementSelector, handler, extra) {
+    document.addEventListener(eventName, function (e) {
+        // loop parent nodes from the target to the delegation node
+        for (let target = e.target; target && target !== this; target = target.parentNode) {
+            if (matches(target, elementSelector)) {
+                handler.call(target, e);
+                break;
+            }
+        }
+    }, extra || false);
+}
 
 function shrink_cell($cell, $scaler, max_width, max_height, max_font_size, transforms) {
     let cached;
@@ -350,7 +417,6 @@ function _shrink_cell($cell, $scaler, max_width, max_height, max_font_size, tran
 
 function getBoundingClientRect(el) {
     const bbox = el.getBoundingClientRect();
-
     return {
         top: bbox.top + (window.scrollY || document.documentElement.scrollTop || 0),
         left: bbox.left + (window.scrollX || document.documentElement.scrollLeft || 0),
@@ -411,35 +477,6 @@ function resize() {
     minirender(gridEl, .8);
 }
 
-game.init = function () {
-    let val = parseInt(teamChooserEl.value)
-    if (val < 0) {
-        teamChooserEl.value = 0
-        return alert("Teams count must be >= 0")
-    }
-
-    const _game = getCurrentGame()
-    const teams = _game.getTeams()
-
-    teamsEl.innerHTML = ''
-
-    if (val < teams.length) {
-        for (let i = val - 1; i < val; i++)
-            _game.getTeams()[i].inactive()
-    } else if (val > teams.length) {
-        for (let i = teams.length; i < val; i++)
-            _game.addTeam(new Team("Team " + (i + 1), 0))
-    }
-    for (let i = 0; i < val; i++) {
-        const team = _game.getTeams()[i]
-        team.active()
-        createTeamTab(team)
-    }
-    saveState()
-    renderState({"page": "game"})
-    resize()
-}
-
 let modal = function () {}
 modal.hide = function () {
     modalAnswerEl.classList.remove("reveal");
@@ -447,12 +484,10 @@ modal.hide = function () {
 }
 modal.reveal = function () {
     modalAnswerEl.classList.add("reveal");
-    const _game = getCurrentGame()
-    const question = _game.getLastQuestion()
-    question.asked()
-    _game.addAnsweredQuestion(question)
-    document.getElementById(question.hashCode()).classList.add("inert");
-    saveState()
+    const currentGame = gameController.getCurrentGame()
+    currentGame.addQuestionToAnswered()
+    document.getElementById(currentGame.getLastQuestion().hashCode()).classList.add("inert");
+    gameController.saveState()
 }
 modal.show = function (question) {
     modalTitleEl.innerText = question.getCategory().getName() + " " + question.getPoints()
@@ -495,10 +530,10 @@ modal.show = function (question) {
 on("click", "#answer-button", () => modal.reveal());
 on("click", "#continue-button", () => modal.hide());
 on("click", "#menu-picker", () => renderState({"page": "menu"}));
-on("click", "#submit", () => game.init());
+on("click", "#submit", () => gameController.play());
 on("click", "#reset-all", () => {
     if (confirm("This will clear the scores and team names, and start a new game. Click OK if you want to do this"))
-        clearState();
+        gameController.clearState();
 });
 
 window.addEventListener("keydown", (e) => {
@@ -512,3 +547,9 @@ window.addEventListener("keydown", (e) => {
         }
     }
 }, false);
+window.addEventListener("resize", debounce(resize, 40, false));
+
+
+const gameController = new GameController()
+
+ready(newReady)
