@@ -11,6 +11,8 @@ const teamsEl = document.getElementById("teams")
 const submitEl = document.getElementById("submit")
 const resetEl = document.getElementById("reset-all")
 
+const btnDeleteGame = document.getElementById("delete-game")
+
 const modalEl = document.getElementById("question-modal")
 const modalTitleEl = document.getElementById("question-title")
 
@@ -154,16 +156,23 @@ class GameController {
         gameChooserEl.onchange = (e) => this.loadGame(e.target.value)
     }
 
-    addGame(game, save) {
-        console.log("adding game", game)
+    addGame(game, save, override) {
         for (const _game of this.getGames()) {
-            if (_game.getName() === game.getName())
-                throw new GameControllerError('Game with the same name already exists')
-            if (_game.hashCode() === game.hashCode())
-                throw new GameControllerError('Game with the same hashCode already exists')
+            if (_game.hashCode() === game.hashCode()) {
+                if (override) {
+                    if (confirm('Game with the same name already exists. Do you want to override?'))
+                        this.games.splice(this.games.indexOf(_game), 1)
+                    else return
+                } else
+                    throw new GameControllerError('Game with the same name already exists')
+            }
         }
         this.games.push(game)
-        if (save) this.saveState(game)
+
+        if (save || override) {
+            this.saveState(game)
+            newReady()
+        }
     }
 
     init() {
@@ -212,24 +221,18 @@ class GameController {
     }
 
     loadGame(game) {
-        if (typeof game === 'string')
-            game = this.getGame(game)
+        if (typeof game === 'string') game = this.getGame(game)
 
         if (!game) {
             confirm('Game not found!')
             throw new Error('Game not found!')
         }
 
-        // const state = this.getState(key)
-        // if (!state) return
-        // const {name} = state
-        // let game = new Kuldvillak(name)
-        // game.loadState(state)
-
         this.setCurrentGame(game)
         renderGrid(game)
         resize()
     }
+
     getGames() {
         return this.games
     }
@@ -254,6 +257,13 @@ class GameController {
             newReady()
         }
     }
+    deleteState() {
+        const state = this.getState()
+        if (state) {
+            localStorage.removeItem(state.id)
+            newReady()
+        }
+    }
 
     getCurrentGame() {
         return this.game;
@@ -268,13 +278,18 @@ initial_state = {"page": "menu"}
 const newReady = function () {
     gameController.init()
     gameChooserEl.innerHTML = ''
-    let first = true;
-    for (const game of gameController.getGames()) {
+
+    const games = gameController.getGames()
+    for (let i = 0; i < games.length; i++) {
+        const game = games[i]
         const opt = createElement('option', null, gameChooserEl, game.getName())
         opt.value = game.hashCode()
-
-        if (first) gameController.loadGame(game) || (first = false)
+        if (i === 0) gameController.loadGame(game)
     }
+
+    if (games.length) btnDeleteGame.style.display = ''
+    else btnDeleteGame.style.display = 'none'
+
     renderState(initial_state)
 }
 
@@ -534,6 +549,10 @@ on("click", "#submit", () => gameController.play());
 on("click", "#reset-all", () => {
     if (confirm("This will clear the scores and team names, and start a new game. Click OK if you want to do this"))
         gameController.clearState();
+});
+on("click", "#delete-game", () => {
+    if(confirm("This current game data will be permanently gone!"))
+        gameController.deleteState()
 });
 
 window.addEventListener("keydown", (e) => {

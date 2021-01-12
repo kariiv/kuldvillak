@@ -1,7 +1,3 @@
-
-const _compress = LZString.compress
-const _decompress = LZString.decompress
-
 const creatorTable = document.getElementById('creator-table')
 const creatorTitle = document.getElementById('creator-title')
 const creatorImport = document.getElementById('creator-import')
@@ -61,6 +57,7 @@ class CreatorCategory extends Category {
     }
 
     areEmptyValues() {
+        if (this.getQuestions().length < 2) return true
         for (const question of this.getQuestions().slice(0,-1))
             if (question.areEmptyValues()) return true
         return false
@@ -84,7 +81,6 @@ function createCategoryTab(category) {
     category.table = tableEl
     category.tbody = createElement('tbody', null, tableEl)
 }
-
 function getCaretPosition() {
     if (window.getSelection && window.getSelection().getRangeAt) {
         const range = window.getSelection().getRangeAt(0);
@@ -105,7 +101,6 @@ function getCaretPosition() {
     }
     return -1;
 }
-
 function createQuestionRow(category, question) {
     const body = category.tbody
     const trEl = createElement('tr', null, body)
@@ -123,13 +118,17 @@ function createQuestionRow(category, question) {
     }
     tPoints.oninput = (e) => {
         const val = e.target.innerText.replace(/[^\d.-]/g, '')
-
         question.setPoints(val)
 
         if (question.getPoints().toString() !== e.target.innerText) {
             let pos = getCaretPosition() - 1
             if (pos < 0) pos = 0
-            e.target.innerText = val
+            if (pos > question.getPoints().toString().length) pos = question.getPoints().toString().length
+
+            if (val.length === 0)
+                e.target.innerText = ''
+            else
+                e.target.innerText = question.getPoints().toString()
 
             if (val.length > 0) {
                 const range = document.createRange()
@@ -149,7 +148,8 @@ class Creator {
     constructor(name) {
         creatorTitle.innerText = name || 'NewGame'
         this.categories = []
-        this.validations = []
+        this.categoryValidations = []
+        this.questionValidations = []
         this.saved = true
     }
 
@@ -203,8 +203,11 @@ class Creator {
         }
     }
 
-    addValidator(f) {
-        this.validations.push(f)
+    addQuestionValidator(f) {
+        this.questionValidations.push(f)
+    }
+    addCategoryValidator(f) {
+        this.categoryValidations.push(f)
     }
 
     setAllToValid() {
@@ -215,7 +218,22 @@ class Creator {
         }
     }
     runValidators() {
-        for (const f of this.validations) f(this.categories)
+        for (const f of this.categoryValidations)
+            f.memo = {}
+
+        for (const f of this.questionValidations)
+            f.memo = {}
+
+        for (const cat of this.categories) {
+            for (const f of this.categoryValidations)
+                f(cat, f.memo)
+
+            for (const ques of cat.getQuestions()) {
+                if (ques.isEmpty()) continue
+                for (const f of this.questionValidations)
+                    f(ques, f.memo)
+            }
+        }
     }
     isTableValid() {
         for (const category of this.categories) {
@@ -226,7 +244,8 @@ class Creator {
         return true;
     }
     areEmptyValues() {
-        for (const cat of this.categories) {
+        if (this.categories.length < 2) return true
+        for (const cat of this.categories.slice(0,-1)) {
             if (!cat.getName()) return true
             if (cat.areEmptyValues())
                 return true
@@ -245,61 +264,77 @@ class Creator {
         return this.saved
     }
 
+    removePrompt() {
+        return this.isSaved() || confirm("Action will clear all the values in table. Click OK if you want to override")
+    }
+    edit(game) {
+        const setData = () => {
+            if (!this.removePrompt()) return
+            this.loadIn(game.getState().c)
+            creatorTitle.innerText = game.getName()
+        }
+        if (!this.isSaved()) setTimeout(setData, 500)  // 154 minimum value
+        else setData()
+    }
     reset() {
-        if (!this.isSaved())
-            if (!confirm("This will clear all values in tables. Click OK if you want to reset")) return
+        if (!this.removePrompt()) return
         creatorTitle.innerText = 'NewGame'
         this.categories = []
         this.saved = true
         this.init()
     }
+    save() {
+        try {
+            const game = new Kuldvillak(creatorTitle.innerText).loadData(this.getCurrentData())
+            gameController.addGame(game, true, true)
+            alert("Game saved successfully.")
+        } catch (e) {
+            return alert("Unable to save the game. " + e.message)
+        }
+        this.saved = true
+        this.enableButtons()
+    }
     copy() {
-        // Todo: Check validation by the game side
+        try {
+            new Kuldvillak().loadData(this.getCurrentData())
+        } catch (e) {
+            return alert("Unable to make copy with invalid data. " + e.message)
+        }
+
         const activeEl = document.activeElement; // save focused button element
-        console.log('Compressed', this.getCurrentData(true))
-        creatorImport.value = _compress(this.getCurrentData(true))
+        try {
+            creatorImport.value = LZString.compressToBase64(this.getCurrentData(true))
+            console.log(creatorImport.value)
+            console.log(creatorImport.value.length,  this.getCurrentData(true).length - creatorImport.value.length)
+        } catch (e) {
+            return alert("Compress failed" + e.message)
+        }
         /* Select the text field */
         creatorImport.select();
-        creatorImport.setSelectionRange(0, 999999); /* For mobile devices */
+        creatorImport.setSelectionRange(0, 9999999); /* For mobile devices */
 
         /* Copy the text inside the text field */
         document.execCommand("copy");
         creatorImport.value = ''
         activeEl.focus() // set focus back to button
     }
-    save() {
-        try {
-            const game = new Kuldvillak(creatorTitle.innerText).loadData(this.getCurrentData())
-            gameController.addGame(game, true)
-            alert("Game saved successfully.")
-        } catch (e) {
-            alert("Unable to save the game. " + e.message)
-            return
-        }
-        this.saved = true
-        this.enableButtons()
-    }
     import() {
-        if (!this.isSaved() && !confirm('You have unsaved progress. Data will be permanently lost!')) return
+        if (!this.removePrompt()) return
         const text = creatorImport.value;
         if (!text) return
         try {
-            const de = _decompress(text)
-            if (!de) {
-                alert('Import value is not full copy or incorrectly compressed')
-                return
-            }
-            this.categories = JSON.parse(de).map(category => CreatorCategory.makeCategory(category))
+            this.loadIn(JSON.parse(LZString.decompressFromBase64(text)))
         } catch (e) {
-            if (e.name === 'SyntaxError')
-                alert('Import value is not JSON')
-            else
-                alert('Import failed. ' + e.message)
+            if (e.name === 'SyntaxError') alert('Import value is not JSON')
+            else alert('Import failed. ' + e.message)
             return
         }
         creatorTitle.innerText = 'ImportGame'
-        this.saved = false
+    }
 
+    loadIn(data) {
+        this.categories = data.map(category => CreatorCategory.makeCategory(category))
+        this.saved = false
         this.init()
 
         this.setAllToValid()
@@ -355,54 +390,42 @@ class Creator {
     }
 }
 
-// START of VALIDATIONS
-function missingCategoriesTitle(categories) {
-    for (const category of categories.slice(0,-1))
-        if (!category.getName()) category.invalid()
+// START OF VALIDATIONS
+function missingCategoryProps(category) {
+    return !category.getName()
 }
-function matchingCategories(categories) {
-    const ex = {}
-    for (const category of categories) {
-        if (category.hashCode() in ex) {
-            category.invalid()
-            ex[category.hashCode()].invalid()
-        } else ex[category.hashCode()] = category
+function validateByKey(key, obj, memo) {
+    if (key in memo) {
+        memo[key].invalid()
+        obj.invalid()
     }
+    memo[key] = obj
 }
-function matchingQuestionsHashCode(categories) {
-    const ex = {}
-    for (const cat of categories)
-        for (const q of cat.getQuestions()) {
-            if (q.isEmpty()) continue
-            if (q.hashCode() in ex) {
-                q.invalid()
-                ex[q.hashCode()].invalid()
-            }
-            else ex[q.hashCode()] = q
-        }
+function matchingCategories(category, memo) {
+    validateByKey(category.hashCode(), category, memo)
 }
-function matchingQuestions(categories) {
-    const ex = {}
-    for (const cat of categories)
-        for (const q of cat.getQuestions()) {
-            if (q.isEmpty()) continue
-            if (q.getQuestion() in ex) {
-                q.invalid()
-                ex[q.getQuestion()].invalid()
-            }
-            else ex[q.getQuestion()] = q
-        }
+function matchingQuestionsHashCode(question, memo) {
+    validateByKey(question.hashCode(), question, memo)
+}
+function matchingQuestions(question, memo) {
+    validateByKey(question.getQuestion(), question, memo)
 }
 /// END OF VALIDATIONS
 
 const creator = new Creator()
-creator.addValidator(matchingCategories)
-creator.addValidator(matchingQuestionsHashCode)
-creator.addValidator(matchingQuestions)
-creator.addValidator(missingCategoriesTitle)
+
+creator.addCategoryValidator(missingCategoryProps)
+creator.addCategoryValidator(matchingCategories)
+
+creator.addQuestionValidator(matchingQuestionsHashCode)
+creator.addQuestionValidator(matchingQuestions)
+
 creator.init()
 
 on("click", "#creator-reset", () => creator.reset());
 on("click", "#creator-copy", () => creator.copy());
 on("click", "#creator-save", () => creator.save());
 on("click", "#import-btn", () => creator.import());
+on("click", "#edit-game", () => {
+    creator.edit(gameController.getCurrentGame())
+});
